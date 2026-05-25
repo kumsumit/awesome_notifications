@@ -9,8 +9,8 @@ class CheckButton extends StatelessWidget {
     this.label,
     this.isSelected, {
     this.onPressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

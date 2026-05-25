@@ -59,7 +59,7 @@ tasks.withType<JavaCompile>().configureEach {
 dependencies {
     // implementation(project(":awn_core"))
 
-    implementation("me.carda:AndroidAwnCore:0.11.0")
+    implementation("com.github.kumsumit.AndroidAwnCore:core:0f9e80f2f3ffbe47bb99811c327f7645225ed6ff")
 
     implementation("com.google.guava:guava:33.6.0-android")
 
@@ -67,12 +67,11 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("org.mockito:mockito-core:5.23.0")
-    testImplementation("org.mockito:mockito-inline:5.2.0")
 
     // Android instrumented tests
-    androidTestImplementation("androidx.annotation:annotation:1.9.1")
+    androidTestImplementation("androidx.annotation:annotation:1.10.1")
     androidTestImplementation("org.mockito:mockito-core:5.23.0")
-    androidTestImplementation("org.mockito:mockito-inline:5.2.0")
+    androidTestImplementation("org.mockito:mockito-android:5.23.0")
 
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:runner:1.7.0")

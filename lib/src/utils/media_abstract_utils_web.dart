@@ -63,7 +63,6 @@ abstract class AwesomeMediaUtils {
         return getFromMediaResource(mediaPath);
 
       case MediaSource.Unknown:
-      default:
         return null;
     }
   }
