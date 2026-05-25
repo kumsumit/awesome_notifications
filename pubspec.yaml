@@ -3,10 +3,11 @@ description: A complete solution to create Local and Push Notifications, customi
 version: 0.11.0
 repository: https://github.com/rafaelsetragni/awesome_notifications
 homepage: https://discord.awesome-notifications.carda.me/
+publish_to: none
 
 environment:
-  sdk: '>=2.19.0 <4.0.0'
-  flutter: ">=2.5.0"
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
@@ -14,16 +15,17 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  plugin_platform_interface: ^2.1.8
-  intl: ^0.20.0
+  plugin_platform_interface:
+    git: https://github.com/kumsumit/plugin_platform_interface.git
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
-  mockito: ^5.4.5
-  mocktail: ^1.0.4
+  mockito: ^5.6.4
+  mocktail: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

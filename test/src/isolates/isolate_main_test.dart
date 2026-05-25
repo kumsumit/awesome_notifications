@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:awesome_notifications/src/isolates/isolate_main.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 typedef ActionHandler = Future<void> Function(ReceivedAction receivedAction);
-
-class MockPluginUtilities extends Mock implements PluginUtilities {}
 
 class MockWidgetsFlutterBinding extends Mock implements WidgetsFlutterBinding {}
 
