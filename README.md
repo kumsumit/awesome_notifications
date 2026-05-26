@@ -373,6 +373,41 @@ After adding the dependency, run the following command to get the package:
 flutter pub get
 ```
 
+### Third-party push SDK compatibility
+
+For full native FCM support, prefer `awesome_notifications_fcm`. If your app already uses `firebase_messaging`, OneSignal, or another push SDK, keep the push SDK responsible for receiving the remote message and use Awesome Notifications only to render the local notification.
+
+The core plugin includes a dependency-free adapter for common Firebase Messaging and OneSignal payloads:
+
+```dart
+FirebaseMessaging.onMessage.listen((message) {
+  AwesomeNotifications().createNotificationFromFirebaseMessage(
+    data: message.data,
+    channelKey: 'basic_channel',
+    title: message.notification?.title,
+    body: message.notification?.body,
+    imageUrl: message.notification?.android?.imageUrl ??
+        message.notification?.apple?.imageUrl,
+  );
+});
+```
+
+```dart
+OneSignal.Notifications.addForegroundWillDisplayListener((event) {
+  event.preventDefault();
+
+  AwesomeNotifications().createNotificationFromOneSignal(
+    additionalData: event.notification.additionalData ?? {},
+    channelKey: 'basic_channel',
+    title: event.notification.title,
+    body: event.notification.body,
+    imageUrl: event.notification.bigPicture,
+  );
+});
+```
+
+Both helpers also accept payloads already formatted as Awesome Notifications JSON (`content`, `schedule`, `actionButtons`, and `localizations`), including those values encoded as JSON strings in provider data payloads.
+
 Now you need to modify some files in native libraries to use awesome_notifications properly. Let's start with the Android configurations:
 
 <br>

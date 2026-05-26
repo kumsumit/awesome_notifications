@@ -7,6 +7,7 @@ import 'awesome_notifications_platform_interface.dart'
 import 'i_awesome_notifications.dart';
 import 'src/enumerators/notification_life_cycle.dart';
 import 'src/enumerators/notification_permission.dart';
+import 'src/helpers/push_provider_adapter.dart';
 import 'src/models/notification_button.dart';
 import 'src/models/notification_channel.dart';
 import 'src/models/notification_channel_group.dart';
@@ -37,6 +38,7 @@ export 'src/exceptions/isolate_callback_exception.dart';
 export 'src/extensions/extension_navigator_state.dart';
 export 'src/helpers/bitmap_helper.dart';
 export 'src/helpers/cron_helper.dart';
+export 'src/helpers/push_provider_adapter.dart';
 export 'src/models/notification_android_crontab.dart';
 export 'src/models/notification_button.dart';
 export 'src/models/notification_calendar.dart';
@@ -173,6 +175,46 @@ class AwesomeNotifications implements IAwesomeNotifications {
   Future<bool> createNotificationFromJsonData(Map<String, dynamic> mapData) {
     return AwesomeNotificationsPlatform.instance.createNotificationFromJsonData(
       mapData,
+    );
+  }
+
+  Future<bool> createNotificationFromFirebaseMessage({
+    required Map<String, dynamic> data,
+    required String channelKey,
+    int? id,
+    String? title,
+    String? body,
+    String? imageUrl,
+  }) {
+    return createNotificationFromJsonData(
+      PushProviderAdapter.fromFirebaseMessage(
+        data: data,
+        channelKey: channelKey,
+        id: id,
+        title: title,
+        body: body,
+        imageUrl: imageUrl,
+      ),
+    );
+  }
+
+  Future<bool> createNotificationFromOneSignal({
+    required Map<String, dynamic> additionalData,
+    required String channelKey,
+    int? id,
+    String? title,
+    String? body,
+    String? imageUrl,
+  }) {
+    return createNotificationFromJsonData(
+      PushProviderAdapter.fromOneSignal(
+        additionalData: additionalData,
+        channelKey: channelKey,
+        id: id,
+        title: title,
+        body: body,
+        imageUrl: imageUrl,
+      ),
     );
   }
 

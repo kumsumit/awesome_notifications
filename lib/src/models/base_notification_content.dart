@@ -429,6 +429,34 @@ class BaseNotificationContent extends Model {
       mapData,
       NotificationCategory.values,
     );
+    _privacy = AwesomeAssertUtils.extractEnum<NotificationPrivacy>(
+      NOTIFICATION_PRIVACY,
+      mapData,
+      NotificationPrivacy.values,
+    );
+    _createdSource = AwesomeAssertUtils.extractEnum<NotificationSource>(
+      NOTIFICATION_CREATED_SOURCE,
+      mapData,
+      NotificationSource.values,
+    );
+    _createdLifeCycle = AwesomeAssertUtils.extractEnum<NotificationLifeCycle>(
+      NOTIFICATION_CREATED_LIFECYCLE,
+      mapData,
+      NotificationLifeCycle.values,
+    );
+    _displayedLifeCycle = AwesomeAssertUtils.extractEnum<NotificationLifeCycle>(
+      NOTIFICATION_DISPLAYED_LIFECYCLE,
+      mapData,
+      NotificationLifeCycle.values,
+    );
+    _createdDate = AwesomeAssertUtils.extractValue<DateTime>(
+      NOTIFICATION_CREATED_DATE,
+      mapData,
+    );
+    _displayedDate = AwesomeAssertUtils.extractValue<DateTime>(
+      NOTIFICATION_DISPLAYED_DATE,
+      mapData,
+    );
     _color = AwesomeAssertUtils.extractValue<Color>(
       NOTIFICATION_COLOR,
       mapData,
