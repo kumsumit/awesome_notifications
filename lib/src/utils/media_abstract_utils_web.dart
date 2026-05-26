@@ -37,18 +37,18 @@ abstract class AwesomeMediaUtils {
   }
 
   @protected
-  getFromMediaAsset(String mediaPath);
+  dynamic getFromMediaAsset(String mediaPath);
 
   @protected
-  getFromMediaFile(String mediaPath) => null;
+  dynamic getFromMediaFile(String mediaPath) => null;
 
   @protected
-  getFromMediaNetwork(String mediaPath);
+  dynamic getFromMediaNetwork(String mediaPath);
 
   @protected
-  getFromMediaResource(String mediaPath);
+  dynamic getFromMediaResource(String mediaPath);
 
-  getFromMediaPath(String mediaPath) {
+  dynamic getFromMediaPath(String mediaPath) {
     switch (getMediaSource(mediaPath)) {
       case MediaSource.Asset:
         return getFromMediaAsset(mediaPath);

@@ -17,16 +17,18 @@ void main() {
         NOTIFICATION_DEFAULT_RINGTONE_TYPE: DefaultRingtoneType.Ringtone.name,
         NOTIFICATION_ENABLE_VIBRATION: true,
         NOTIFICATION_ENABLE_LIGHTS: true,
-        NOTIFICATION_LED_COLOR: Colors.red.value,
+        NOTIFICATION_LED_COLOR: Colors.red.toARGB32(),
         NOTIFICATION_LED_ON_MS: 1000,
         NOTIFICATION_LED_OFF_MS: 1000,
         NOTIFICATION_ICON: 'icon',
-        NOTIFICATION_DEFAULT_COLOR: Colors.blue.value,
+        NOTIFICATION_DEFAULT_COLOR: Colors.blue.toARGB32(),
       };
 
       NotificationChannel channel = NotificationChannel(
-              channelKey: '', channelName: '', channelDescription: '')
-          .fromMap(data);
+        channelKey: '',
+        channelName: '',
+        channelDescription: '',
+      ).fromMap(data);
 
       expect(channel.channelKey, 'channelKey');
       expect(channel.channelName, 'channelName');
@@ -47,70 +49,84 @@ void main() {
     });
 
     test(
-        'should throw an exception when creating a NotificationChannel object with an empty or null channelKey, channelName, or channelDescription',
-        () {
-      Map<String, dynamic> data = {
-        NOTIFICATION_CHANNEL_KEY: null,
-        NOTIFICATION_CHANNEL_NAME: 'channelName',
-        NOTIFICATION_CHANNEL_DESCRIPTION: 'channelDescription',
-      };
+      'should throw an exception when creating a NotificationChannel object with an empty or null channelKey, channelName, or channelDescription',
+      () {
+        Map<String, dynamic> data = {
+          NOTIFICATION_CHANNEL_KEY: null,
+          NOTIFICATION_CHANNEL_NAME: 'channelName',
+          NOTIFICATION_CHANNEL_DESCRIPTION: 'channelDescription',
+        };
 
-      expect(
+        expect(
           () => NotificationChannel(
-                  channelKey: '', channelName: '', channelDescription: '')
-              .fromMap(data)
-              .validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelKey: '',
+            channelName: '',
+            channelDescription: '',
+          ).fromMap(data).validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_KEY] = '';
-      expect(
+        data[NOTIFICATION_CHANNEL_KEY] = '';
+        expect(
           () => NotificationChannel(
-                  channelKey: '', channelName: '', channelDescription: '')
-              .fromMap(data)
-              .validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelKey: '',
+            channelName: '',
+            channelDescription: '',
+          ).fromMap(data).validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_KEY] = 'channelKey';
-      data[NOTIFICATION_CHANNEL_NAME] = null;
-      expect(
+        data[NOTIFICATION_CHANNEL_KEY] = 'channelKey';
+        data[NOTIFICATION_CHANNEL_NAME] = null;
+        expect(
           () => NotificationChannel(
-                  channelKey: '', channelName: '', channelDescription: '')
-              .fromMap(data)
-              .validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelKey: '',
+            channelName: '',
+            channelDescription: '',
+          ).fromMap(data).validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_NAME] = '';
-      expect(
+        data[NOTIFICATION_CHANNEL_NAME] = '';
+        expect(
           () => NotificationChannel(
-                  channelKey: '', channelName: '', channelDescription: '')
-              .fromMap(data)
-              .validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelKey: '',
+            channelName: '',
+            channelDescription: '',
+          ).fromMap(data).validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_NAME] = 'channelName';
-      data[NOTIFICATION_CHANNEL_DESCRIPTION] = null;
-      expect(
+        data[NOTIFICATION_CHANNEL_NAME] = 'channelName';
+        data[NOTIFICATION_CHANNEL_DESCRIPTION] = null;
+        expect(
           () => NotificationChannel(
-                  channelKey: '', channelName: '', channelDescription: '')
-              .fromMap(data)
-              .validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelKey: '',
+            channelName: '',
+            channelDescription: '',
+          ).fromMap(data).validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_DESCRIPTION] = '';
-      expect(
+        data[NOTIFICATION_CHANNEL_DESCRIPTION] = '';
+        expect(
           () => NotificationChannel(
-                  channelKey: '', channelName: '', channelDescription: '')
-              .fromMap(data)
-              .validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
-    });
+            channelKey: '',
+            channelName: '',
+            channelDescription: '',
+          ).fromMap(data).validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
+      },
+    );
 
     test('should convert a NotificationChannel object to a map', () {
       NotificationChannel channel = NotificationChannel(
-          channelKey: 'channelKey',
-          channelName: 'channelName',
-          channelDescription: 'channelDescription',
-          channelShowBadge: true);
+        channelKey: 'channelKey',
+        channelName: 'channelName',
+        channelDescription: 'channelDescription',
+        channelShowBadge: true,
+      );
 
       Map<String, dynamic> data = channel.toMap();
 

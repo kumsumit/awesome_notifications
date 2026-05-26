@@ -39,19 +39,19 @@ abstract class AwesomeMediaUtils {
   }
 
   @protected
-  getFromMediaAsset(String mediaPath);
+  dynamic getFromMediaAsset(String mediaPath);
 
   @protected
-  getFromMediaFile(String mediaPath) =>
+  dynamic getFromMediaFile(String mediaPath) =>
       FileImage(File(cleanMediaPath(mediaPath)));
 
   @protected
-  getFromMediaNetwork(String mediaPath);
+  dynamic getFromMediaNetwork(String mediaPath);
 
   @protected
-  getFromMediaResource(String mediaPath);
+  dynamic getFromMediaResource(String mediaPath);
 
-  getFromMediaPath(String mediaPath) {
+  dynamic getFromMediaPath(String mediaPath) {
     switch (getMediaSource(mediaPath)) {
       case MediaSource.Asset:
         return getFromMediaAsset(mediaPath);
@@ -66,7 +66,7 @@ abstract class AwesomeMediaUtils {
         return getFromMediaResource(mediaPath);
 
       case MediaSource.Unknown:
-      return null;
+        return null;
     }
   }
 }

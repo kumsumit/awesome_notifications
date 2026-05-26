@@ -1,0 +1,51 @@
+// This file is based on Flutter's template.
+// Updated for compatibility with current Flutter Gradle setup.
+
+pluginManagement {
+    val flutterSdkPath =
+        run {
+            val properties = java.util.Properties()
+            file("local.properties").inputStream().use { properties.load(it) }
+            val flutterSdkPath = properties.getProperty("flutter.sdk")
+            require(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
+            flutterSdkPath
+        }
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+buildscript {
+    dependencyLocking {
+        lockFile = file("${rootProject.projectDir}/buildscript-gradle.lockfile")
+        lockAllConfigurations()
+    }
+}
+
+plugins {
+    id("dev.flutter.flutter-plugin-loader") version "1.0.0"
+    id("com.android.application") version "9.2.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.3.21" apply false
+}
+
+include(":app")
+
+val useAwnLocalReferences = true
+
+if (useAwnLocalReferences) {
+    include(":awn_core")
+
+    val localAndroidCoreFolder =
+        File(rootDir, "../../../AndroidAwnCore/core")
+
+    require(localAndroidCoreFolder.exists()) {
+        "Local AndroidAwnCore folder does not exist"
+    }
+
+    project(":awn_core").projectDir = localAndroidCoreFolder
+}

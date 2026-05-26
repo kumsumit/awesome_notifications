@@ -11,18 +11,13 @@ void main() {
         body: 'Test Body',
       );
 
-      NotificationSchedule schedule =
-          NotificationInterval(interval: Duration(minutes: 1));
+      NotificationSchedule schedule = NotificationInterval(
+        interval: Duration(minutes: 1),
+      );
 
       List<NotificationActionButton> actionButtons = [
-        NotificationActionButton(
-          label: 'Accept',
-          key: 'accept',
-        ),
-        NotificationActionButton(
-          label: 'Decline',
-          key: 'decline',
-        ),
+        NotificationActionButton(label: 'Accept', key: 'accept'),
+        NotificationActionButton(label: 'Decline', key: 'decline'),
       ];
 
       Map<String, NotificationLocalization> localizations = {
@@ -40,12 +35,14 @@ void main() {
         'content': content.toMap(),
         'schedule': schedule.toMap(),
         'actionButtons': actionButtons.map((button) => button.toMap()).toList(),
-        'localizations':
-            localizations.map((key, value) => MapEntry(key, value.toMap())),
+        'localizations': localizations.map(
+          (key, value) => MapEntry(key, value.toMap()),
+        ),
       };
 
-      NotificationModel? notificationModel =
-          NotificationModel().fromMap(dataMap);
+      NotificationModel? notificationModel = NotificationModel().fromMap(
+        dataMap,
+      );
 
       expect(notificationModel, isNotNull);
       expect(notificationModel?.content, isNotNull);
@@ -61,9 +58,13 @@ void main() {
 
       expect(notificationModel?.localizations, isNotNull);
       expect(
-          notificationModel?.localizations?['en_US']?.title, 'English Title');
-      expect(notificationModel?.localizations?['es_ES']?.title,
-          'Título en Español');
+        notificationModel?.localizations?['en_US']?.title,
+        'English Title',
+      );
+      expect(
+        notificationModel?.localizations?['es_ES']?.title,
+        'Título en Español',
+      );
 
       Map<String, dynamic> newDataMap = notificationModel?.toMap() ?? {};
       expect(newDataMap['content']['title'], 'Test Title');
@@ -75,7 +76,9 @@ void main() {
 
       expect(newDataMap['localizations']['en_US']['title'], 'English Title');
       expect(
-          newDataMap['localizations']['es_ES']['title'], 'Título en Español');
+        newDataMap['localizations']['es_ES']['title'],
+        'Título en Español',
+      );
     });
 
     test('using notification callendar', () {
@@ -89,14 +92,8 @@ void main() {
       NotificationSchedule schedule = NotificationCalendar(second: 0);
 
       List<NotificationActionButton> actionButtons = [
-        NotificationActionButton(
-          label: 'Accept',
-          key: 'accept',
-        ),
-        NotificationActionButton(
-          label: 'Decline',
-          key: 'decline',
-        ),
+        NotificationActionButton(label: 'Accept', key: 'accept'),
+        NotificationActionButton(label: 'Decline', key: 'decline'),
       ];
 
       Map<String, NotificationLocalization> localizations = {
@@ -114,12 +111,14 @@ void main() {
         'content': content.toMap(),
         'schedule': schedule.toMap(),
         'actionButtons': actionButtons.map((button) => button.toMap()).toList(),
-        'localizations':
-            localizations.map((key, value) => MapEntry(key, value.toMap())),
+        'localizations': localizations.map(
+          (key, value) => MapEntry(key, value.toMap()),
+        ),
       };
 
-      NotificationModel? notificationModel =
-          NotificationModel().fromMap(dataMap);
+      NotificationModel? notificationModel = NotificationModel().fromMap(
+        dataMap,
+      );
 
       expect(notificationModel, isNotNull);
       expect(notificationModel?.content, isNotNull);
@@ -135,9 +134,13 @@ void main() {
 
       expect(notificationModel?.localizations, isNotNull);
       expect(
-          notificationModel?.localizations?['en_US']?.title, 'English Title');
-      expect(notificationModel?.localizations?['es_ES']?.title,
-          'Título en Español');
+        notificationModel?.localizations?['en_US']?.title,
+        'English Title',
+      );
+      expect(
+        notificationModel?.localizations?['es_ES']?.title,
+        'Título en Español',
+      );
 
       Map<String, dynamic> newDataMap = notificationModel?.toMap() ?? {};
       expect(newDataMap['content']['title'], 'Test Title');
@@ -149,7 +152,9 @@ void main() {
 
       expect(newDataMap['localizations']['en_US']['title'], 'English Title');
       expect(
-          newDataMap['localizations']['es_ES']['title'], 'Título en Español');
+        newDataMap['localizations']['es_ES']['title'],
+        'Título en Español',
+      );
     });
 
     test('using notification crontab', () {
@@ -160,18 +165,13 @@ void main() {
         body: 'Test Body',
       );
 
-      NotificationSchedule schedule =
-          NotificationAndroidCrontab(crontabExpression: '0 30 14 * * *');
+      NotificationSchedule schedule = NotificationAndroidCrontab(
+        crontabExpression: '0 30 14 * * *',
+      );
 
       List<NotificationActionButton> actionButtons = [
-        NotificationActionButton(
-          label: 'Accept',
-          key: 'accept',
-        ),
-        NotificationActionButton(
-          label: 'Decline',
-          key: 'decline',
-        ),
+        NotificationActionButton(label: 'Accept', key: 'accept'),
+        NotificationActionButton(label: 'Decline', key: 'decline'),
       ];
 
       Map<String, NotificationLocalization> localizations = {
@@ -189,12 +189,14 @@ void main() {
         'content': content.toMap(),
         'schedule': schedule.toMap(),
         'actionButtons': actionButtons.map((button) => button.toMap()).toList(),
-        'localizations':
-            localizations.map((key, value) => MapEntry(key, value.toMap())),
+        'localizations': localizations.map(
+          (key, value) => MapEntry(key, value.toMap()),
+        ),
       };
 
-      NotificationModel? notificationModel =
-          NotificationModel().fromMap(dataMap);
+      NotificationModel? notificationModel = NotificationModel().fromMap(
+        dataMap,
+      );
 
       expect(notificationModel, isNotNull);
       expect(notificationModel?.content, isNotNull);
@@ -210,9 +212,13 @@ void main() {
 
       expect(notificationModel?.localizations, isNotNull);
       expect(
-          notificationModel?.localizations?['en_US']?.title, 'English Title');
-      expect(notificationModel?.localizations?['es_ES']?.title,
-          'Título en Español');
+        notificationModel?.localizations?['en_US']?.title,
+        'English Title',
+      );
+      expect(
+        notificationModel?.localizations?['es_ES']?.title,
+        'Título en Español',
+      );
 
       Map<String, dynamic> newDataMap = notificationModel?.toMap() ?? {};
       expect(newDataMap['content']['title'], 'Test Title');
@@ -224,7 +230,9 @@ void main() {
 
       expect(newDataMap['localizations']['en_US']['title'], 'English Title');
       expect(
-          newDataMap['localizations']['es_ES']['title'], 'Título en Español');
+        newDataMap['localizations']['es_ES']['title'],
+        'Título en Español',
+      );
     });
   });
 
@@ -248,10 +256,7 @@ void main() {
 
       NotificationModel notificationModel = NotificationModel(content: content);
 
-      expect(
-        () => notificationModel.validate(),
-        returnsNormally,
-      );
+      expect(() => notificationModel.validate(), returnsNormally);
     });
   });
 }

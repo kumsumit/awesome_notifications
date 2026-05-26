@@ -19,14 +19,14 @@ Map<String, WidgetBuilder> materialRoutes = {
   PAGE_HOME: (context) => const HomePage(),
   PAGE_MEDIA_DETAILS: (context) => MediaDetailsPage(),
   PAGE_NOTIFICATION_DETAILS: (context) => NotificationDetailsPage(
-        ModalRoute.of(context)!.settings.arguments as ReceivedNotification,
-      ),
+    ModalRoute.of(context)!.settings.arguments as ReceivedNotification,
+  ),
   PAGE_PHONE_CALL: (context) {
     ReceivedAction? receivedAction =
         ModalRoute.of(context)!.settings.arguments == null
-            ? NotificationsController.initialCallAction
-            : ModalRoute.of(context)!.settings.arguments as ReceivedAction;
+        ? NotificationsController.initialCallAction
+        : ModalRoute.of(context)!.settings.arguments as ReceivedAction;
 
     return PhoneCallPage(receivedAction: receivedAction!);
-  }
+  },
 };

@@ -11,20 +11,29 @@ void main() {
 
     test('Creating BitmapHelper using different constructors', () {
       final Uint8List content = Uint8List.fromList(
-          List.filled(width * height * bitmapPixelLength, 0));
+        List.filled(width * height * bitmapPixelLength, 0),
+      );
 
       // Test BitmapHelper.fromHeadless
-      final BitmapHelper bitmapHeadless =
-          BitmapHelper.fromHeadless(width, height, content);
+      final BitmapHelper bitmapHeadless = BitmapHelper.fromHeadless(
+        width,
+        height,
+        content,
+      );
       expect(bitmapHeadless.width, width);
       expect(bitmapHeadless.height, height);
       expect(bitmapHeadless.content, content);
 
       // Test BitmapHelper.fromHeadful
-      final Uint8List headedContent =
-          Uint8List.fromList([...List.filled(RGBA32HeaderSize, 0), ...content]);
-      final BitmapHelper bitmapHeadful =
-          BitmapHelper.fromHeadful(width, height, headedContent);
+      final Uint8List headedContent = Uint8List.fromList([
+        ...List.filled(RGBA32HeaderSize, 0),
+        ...content,
+      ]);
+      final BitmapHelper bitmapHeadful = BitmapHelper.fromHeadful(
+        width,
+        height,
+        headedContent,
+      );
       expect(bitmapHeadful.width, width);
       expect(bitmapHeadful.height, height);
       expect(bitmapHeadful.content, content);
@@ -38,9 +47,13 @@ void main() {
 
     test('Cloning BitmapHelper', () {
       final Uint8List content = Uint8List.fromList(
-          List.filled(width * height * bitmapPixelLength, 0));
-      final BitmapHelper original =
-          BitmapHelper.fromHeadless(width, height, content);
+        List.filled(width * height * bitmapPixelLength, 0),
+      );
+      final BitmapHelper original = BitmapHelper.fromHeadless(
+        width,
+        height,
+        content,
+      );
       final BitmapHelper clone = original.cloneHeadless();
 
       expect(clone.width, original.width);
@@ -50,9 +63,13 @@ void main() {
 
     test('Build image from BitmapHelper', () async {
       final Uint8List content = Uint8List.fromList(
-          List.filled(width * height * bitmapPixelLength, 0));
-      final BitmapHelper bitmap =
-          BitmapHelper.fromHeadless(width, height, content);
+        List.filled(width * height * bitmapPixelLength, 0),
+      );
+      final BitmapHelper bitmap = BitmapHelper.fromHeadless(
+        width,
+        height,
+        content,
+      );
 
       final image = await bitmap.buildImage();
       expect(image.width, width);
@@ -61,9 +78,13 @@ void main() {
 
     test('Build headed content from BitmapHelper', () {
       final Uint8List content = Uint8List.fromList(
-          List.filled(width * height * bitmapPixelLength, 0));
-      final BitmapHelper bitmap =
-          BitmapHelper.fromHeadless(width, height, content);
+        List.filled(width * height * bitmapPixelLength, 0),
+      );
+      final BitmapHelper bitmap = BitmapHelper.fromHeadless(
+        width,
+        height,
+        content,
+      );
 
       final headedContent = bitmap.buildHeaded();
       expect(headedContent.length, bitmap.size + RGBA32HeaderSize);
@@ -83,8 +104,11 @@ void main() {
 
     test('Create BitmapHelper from ImageProvider', () async {
       const ImageProvider provider = AssetImage(
-          'test/assets/images/test_image.png'); // Replace with an actual image file in your assets folder
-      final BitmapHelper bitmap = await BitmapHelper.fromImageProvider(provider);
+        'test/assets/images/test_image.png',
+      ); // Replace with an actual image file in your assets folder
+      final BitmapHelper bitmap = await BitmapHelper.fromImageProvider(
+        provider,
+      );
 
       expect(bitmap.width, width); // Replace with actual image width
       expect(bitmap.height, height); // Replace with actual image height

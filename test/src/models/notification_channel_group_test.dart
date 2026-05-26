@@ -9,9 +9,10 @@ void main() {
         NOTIFICATION_CHANNEL_GROUP_NAME: 'groupName',
       };
 
-      NotificationChannelGroup? channelGroup =
-          NotificationChannelGroup(channelGroupKey: '', channelGroupName: '')
-              .fromMap(data);
+      NotificationChannelGroup? channelGroup = NotificationChannelGroup(
+        channelGroupKey: '',
+        channelGroupName: '',
+      ).fromMap(data);
 
       expect(channelGroup, isNotNull);
       expect(channelGroup?.channelGroupKey, 'groupKey');
@@ -19,53 +20,59 @@ void main() {
     });
 
     test(
-        'should throw an exception when creating a NotificationChannelGroup object with an empty or null channelGroupKey',
-        () {
-      Map<String, dynamic> data = {
-        NOTIFICATION_CHANNEL_GROUP_NAME: 'groupName',
-      };
+      'should throw an exception when creating a NotificationChannelGroup object with an empty or null channelGroupKey',
+      () {
+        Map<String, dynamic> data = {
+          NOTIFICATION_CHANNEL_GROUP_NAME: 'groupName',
+        };
 
-      expect(
+        expect(
           () => NotificationChannelGroup(
-                  channelGroupKey: '', channelGroupName: '')
-              .fromMap(data)
-              ?.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelGroupKey: '',
+            channelGroupName: '',
+          ).fromMap(data)?.validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_GROUP_KEY] = '';
+        data[NOTIFICATION_CHANNEL_GROUP_KEY] = '';
 
-      expect(
+        expect(
           () => NotificationChannelGroup(
-                  channelGroupKey: '', channelGroupName: '')
-              .fromMap(data)
-              ?.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
-    });
+            channelGroupKey: '',
+            channelGroupName: '',
+          ).fromMap(data)?.validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
+      },
+    );
 
     test(
-        'should throw an exception when creating a NotificationChannelGroup object with an empty or null channelGroupName',
-        () {
-      Map<String, dynamic> data = {
-        NOTIFICATION_CHANNEL_GROUP_KEY: 'groupKey',
-        NOTIFICATION_CHANNEL_GROUP_NAME: null,
-      };
+      'should throw an exception when creating a NotificationChannelGroup object with an empty or null channelGroupName',
+      () {
+        Map<String, dynamic> data = {
+          NOTIFICATION_CHANNEL_GROUP_KEY: 'groupKey',
+          NOTIFICATION_CHANNEL_GROUP_NAME: null,
+        };
 
-      expect(
+        expect(
           () => NotificationChannelGroup(
-                  channelGroupKey: '', channelGroupName: '')
-              .fromMap(data)
-              ?.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+            channelGroupKey: '',
+            channelGroupName: '',
+          ).fromMap(data)?.validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
 
-      data[NOTIFICATION_CHANNEL_GROUP_NAME] = '';
+        data[NOTIFICATION_CHANNEL_GROUP_NAME] = '';
 
-      expect(
+        expect(
           () => NotificationChannelGroup(
-                  channelGroupKey: '', channelGroupName: '')
-              .fromMap(data)
-              ?.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
-    });
+            channelGroupKey: '',
+            channelGroupName: '',
+          ).fromMap(data)?.validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
+      },
+    );
 
     test('should convert a NotificationChannelGroup object to a map', () {
       NotificationChannelGroup channelGroup = NotificationChannelGroup(

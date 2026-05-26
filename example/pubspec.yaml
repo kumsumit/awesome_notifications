@@ -32,7 +32,8 @@ dependencies:
   universal_io: ^2.3.1
 
   font_awesome_flutter: ^11.0.0
-  fluttertoast: ^9.1.0
+  fluttertoast: 
+    git: https://github.com/sumitsharansatsangi/fluttertoast.git
   http: ^1.6.0
   path_provider:
     git: https://github.com/kumsumit/path_provider.git
@@ -47,7 +48,7 @@ dependencies:
   url_launcher:
     git: https://github.com/kumsumit/url_launcher.git
   intl: ^0.20.2
-  palette_generator: ^0.3.3+7
+  palette_generator_master: ^1.1.0
 
 dev_dependencies:
   flutter_test:

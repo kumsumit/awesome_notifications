@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.Test
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     id("com.android.library")
 }
@@ -34,22 +37,22 @@ android {
     }
 
     testOptions {
-        unitTests.all {
-            testLogging {
-                events(
-                    "passed",
-                    "skipped",
-                    "failed",
-                    "standardOut",
-                    "standardError"
-                )
-
-                showStandardStreams = true
-            }
-
-            outputs.upToDateWhen { false }
-        }
+        unitTests.isReturnDefaultValues = true
     }
+}
+
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events(
+            TestLogEvent.PASSED,
+            TestLogEvent.SKIPPED,
+            TestLogEvent.FAILED,
+            TestLogEvent.STANDARD_OUT,
+            TestLogEvent.STANDARD_ERROR
+        )
+        showStandardStreams = true
+    }
+    outputs.upToDateWhen { false }
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -57,9 +60,12 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 dependencies {
-    // implementation(project(":awn_core"))
-
-    implementation("com.github.kumsumit.AndroidAwnCore:core:0f9e80f2f3ffbe47bb99811c327f7645225ed6ff")
+    val awnCoreProject = rootProject.findProject(":awn_core")
+    if (awnCoreProject != null) {
+        implementation(awnCoreProject)
+    } else {
+        implementation("com.github.kumsumit.AndroidAwnCore:core:0f9e80f2f3ffbe47bb99811c327f7645225ed6ff")
+    }
 
     implementation("com.google.guava:guava:33.6.0-android")
 

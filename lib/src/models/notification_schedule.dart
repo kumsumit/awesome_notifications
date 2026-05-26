@@ -13,12 +13,13 @@ abstract class NotificationSchedule extends Model {
   /// [repeats]: Specifies whether the notification should repeat.
   /// [preciseAlarm]: Requires precise scheduling, which may consume more battery. Needs explicit permission on Android 12+.
   /// [delayTolerance]: Specifies the delay tolerance in milliseconds for scheduling notifications.
-  NotificationSchedule(
-      {required this.timeZone,
-      this.allowWhileIdle = false,
-      this.repeats = false,
-      this.preciseAlarm = false,
-      this.delayTolerance = 600000});
+  NotificationSchedule({
+    required this.timeZone,
+    this.allowWhileIdle = false,
+    this.repeats = false,
+    this.preciseAlarm = false,
+    this.delayTolerance = 600000,
+  });
 
   /// Full time zone identifier for scheduling the notification. Example: 'America/Sao_Paulo', 'America/New_York', 'Europe/Helsinki'.
   String timeZone;
@@ -39,24 +40,39 @@ abstract class NotificationSchedule extends Model {
   /// Returns null if invalid [mapData] is provided.
   @override
   NotificationSchedule? fromMap(Map<String, dynamic> mapData) {
-    timeZone = AwesomeAssertUtils.extractValue(
-            NOTIFICATION_SCHEDULE_TIMEZONE, mapData) ??
+    timeZone =
+        AwesomeAssertUtils.extractValue(
+          NOTIFICATION_SCHEDULE_TIMEZONE,
+          mapData,
+        ) ??
         timeZone;
 
-    allowWhileIdle = AwesomeAssertUtils.extractValue(
-            NOTIFICATION_ALLOW_WHILE_IDLE, mapData) ??
+    allowWhileIdle =
+        AwesomeAssertUtils.extractValue(
+          NOTIFICATION_ALLOW_WHILE_IDLE,
+          mapData,
+        ) ??
         false;
 
-    repeats = AwesomeAssertUtils.extractValue(
-            NOTIFICATION_SCHEDULE_REPEATS, mapData) ??
+    repeats =
+        AwesomeAssertUtils.extractValue(
+          NOTIFICATION_SCHEDULE_REPEATS,
+          mapData,
+        ) ??
         false;
 
-    delayTolerance = AwesomeAssertUtils.extractValue(
-            NOTIFICATION_SCHEDULE_DELAY_TOLERANCE, mapData) ??
+    delayTolerance =
+        AwesomeAssertUtils.extractValue(
+          NOTIFICATION_SCHEDULE_DELAY_TOLERANCE,
+          mapData,
+        ) ??
         0;
 
-    preciseAlarm = AwesomeAssertUtils.extractValue(
-            NOTIFICATION_SCHEDULE_PRECISE_ALARM, mapData) ??
+    preciseAlarm =
+        AwesomeAssertUtils.extractValue(
+          NOTIFICATION_SCHEDULE_PRECISE_ALARM,
+          mapData,
+        ) ??
         false;
 
     return this;
@@ -70,7 +86,7 @@ abstract class NotificationSchedule extends Model {
       NOTIFICATION_ALLOW_WHILE_IDLE: allowWhileIdle,
       NOTIFICATION_SCHEDULE_REPEATS: repeats,
       NOTIFICATION_SCHEDULE_PRECISE_ALARM: preciseAlarm,
-      NOTIFICATION_SCHEDULE_DELAY_TOLERANCE: delayTolerance
+      NOTIFICATION_SCHEDULE_DELAY_TOLERANCE: delayTolerance,
     };
 
     return dataMap;

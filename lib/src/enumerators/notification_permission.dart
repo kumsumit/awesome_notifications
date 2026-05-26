@@ -42,5 +42,5 @@ enum NotificationPermission {
   Provisional,
 
   /// [Car] The ability to display notifications while the device is in car mode.
-  Car
+  Car,
 }

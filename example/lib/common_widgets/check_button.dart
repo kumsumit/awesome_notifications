@@ -5,12 +5,7 @@ class CheckButton extends StatelessWidget {
   final bool isSelected;
   final void Function(bool)? onPressed;
 
-  const CheckButton(
-    this.label,
-    this.isSelected, {
-    this.onPressed,
-    super.key,
-  });
+  const CheckButton(this.label, this.isSelected, {this.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +16,13 @@ class CheckButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
+          SizedBox(
             width: mediaQueryData.size.width - 110 /* 30 - 60 - 20 */,
             child: Text(label, style: TextStyle(fontSize: 16)),
           ),
-          Container(
+          SizedBox(
             width: 60,
-            child: Switch(
-              value: isSelected,
-              onChanged: onPressed,
-            ),
+            child: Switch(value: isSelected, onChanged: onPressed),
           ),
         ],
       ),

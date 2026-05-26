@@ -10,5 +10,5 @@ enum ForegroundStartMode {
   notStick,
 
   /// Corresponds to [`Service.START_REDELIVER_INTENT`](https://developer.android.com/reference/android/app/Service#START_REDELIVER_INTENT).
-  redeliverIntent
+  redeliverIntent,
 }

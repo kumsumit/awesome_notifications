@@ -66,46 +66,63 @@ void main() {
       expect(() => awesomeNotifications.validateId(1), returnsNormally);
       expect(() => awesomeNotifications.validateId(-1), returnsNormally);
       expect(
-          () => awesomeNotifications.validateId(0x7FFFFFFF), returnsNormally);
+        () => awesomeNotifications.validateId(0x7FFFFFFF),
+        returnsNormally,
+      );
       expect(
-          () => awesomeNotifications.validateId(-0x80000000), returnsNormally);
+        () => awesomeNotifications.validateId(-0x80000000),
+        returnsNormally,
+      );
 
-      expect(() => awesomeNotifications.validateId(-0x80000000 - 1),
-          throwsA(isA<ArgumentError>()));
+      expect(
+        () => awesomeNotifications.validateId(-0x80000000 - 1),
+        throwsA(isA<ArgumentError>()),
+      );
 
-      expect(() => awesomeNotifications.validateId(0x7FFFFFFF + 1),
-          throwsA(isA<ArgumentError>()));
+      expect(
+        () => awesomeNotifications.validateId(0x7FFFFFFF + 1),
+        throwsA(isA<ArgumentError>()),
+      );
     });
 
     test('cancel', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_NOTIFICATION, null);
+        CHANNEL_METHOD_CANCEL_NOTIFICATION,
+        null,
+      );
       await awesomeNotifications.cancel(1);
     });
 
     test('cancelAll', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_ALL_NOTIFICATIONS, null);
+        CHANNEL_METHOD_CANCEL_ALL_NOTIFICATIONS,
+        null,
+      );
       await awesomeNotifications.cancelAll();
     });
 
     test('cancelAllSchedules', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_ALL_SCHEDULES, null);
+        CHANNEL_METHOD_CANCEL_ALL_SCHEDULES,
+        null,
+      );
       await awesomeNotifications.cancelAllSchedules();
     });
 
     // Another example:
     test('createNotification', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CREATE_NOTIFICATION, true);
+        CHANNEL_METHOD_CREATE_NOTIFICATION,
+        true,
+      );
 
       final bool result = await awesomeNotifications.createNotification(
         content: NotificationContent(
-            id: 1,
-            channelKey: 'test_channel',
-            title: 'Test title',
-            body: 'Test body'),
+          id: 1,
+          channelKey: 'test_channel',
+          title: 'Test title',
+          body: 'Test body',
+        ),
       );
 
       expect(result, true);
@@ -113,32 +130,43 @@ void main() {
 
     test('cancelNotificationsByChannelKey', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_CHANNEL_KEY, null);
-      await awesomeNotifications
-          .cancelNotificationsByChannelKey('test_channel');
+        CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_CHANNEL_KEY,
+        null,
+      );
+      await awesomeNotifications.cancelNotificationsByChannelKey(
+        'test_channel',
+      );
     });
 
     test('cancelNotificationsByGroupKey', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_GROUP_KEY, null);
+        CHANNEL_METHOD_CANCEL_NOTIFICATIONS_BY_GROUP_KEY,
+        null,
+      );
       await awesomeNotifications.cancelNotificationsByGroupKey('test_group');
     });
 
     test('cancelSchedule', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_SCHEDULE, null);
+        CHANNEL_METHOD_CANCEL_SCHEDULE,
+        null,
+      );
       await awesomeNotifications.cancelSchedule(1);
     });
 
     test('cancelSchedulesByChannelKey', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_SCHEDULES_BY_CHANNEL_KEY, null);
+        CHANNEL_METHOD_CANCEL_SCHEDULES_BY_CHANNEL_KEY,
+        null,
+      );
       await awesomeNotifications.cancelSchedulesByChannelKey('test_channel');
     });
 
     test('cancelSchedulesByGroupKey', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CANCEL_SCHEDULES_BY_GROUP_KEY, null);
+        CHANNEL_METHOD_CANCEL_SCHEDULES_BY_GROUP_KEY,
+        null,
+      );
       await awesomeNotifications.cancelSchedulesByGroupKey('test_group');
     });
 
@@ -148,25 +176,29 @@ void main() {
         NotificationPermission.Alert,
         NotificationPermission.Sound,
         NotificationPermission.Vibration,
-        NotificationPermission.Light
+        NotificationPermission.Light,
       ];
       List<Object?> permissionList = permissions.map((e) => e.name).toList();
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CHECK_PERMISSIONS, permissionList);
-
-      List<NotificationPermission> result =
-          await awesomeNotifications.checkPermissionList(
-        channelKey: 'test_channel',
-        permissions: permissions,
+        CHANNEL_METHOD_CHECK_PERMISSIONS,
+        permissionList,
       );
+
+      List<NotificationPermission> result = await awesomeNotifications
+          .checkPermissionList(
+            channelKey: 'test_channel',
+            permissions: permissions,
+          );
 
       expect(result, permissions);
     });
 
     test('createNotificationFromJsonData with valid data', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CREATE_NOTIFICATION, true);
+        CHANNEL_METHOD_CREATE_NOTIFICATION,
+        true,
+      );
 
       Map<String, dynamic> validMapData = {
         NOTIFICATION_CONTENT: json.encode({
@@ -177,8 +209,9 @@ void main() {
         }),
       };
 
-      bool result = await awesomeNotifications
-          .createNotificationFromJsonData(validMapData);
+      bool result = await awesomeNotifications.createNotificationFromJsonData(
+        validMapData,
+      );
 
       expect(result, true);
     });
@@ -193,15 +226,18 @@ void main() {
         }),
       };
 
-      bool result = await awesomeNotifications
-          .createNotificationFromJsonData(invalidMapData);
+      bool result = await awesomeNotifications.createNotificationFromJsonData(
+        invalidMapData,
+      );
 
       expect(result, false);
     });
 
     test('createNotificationFromJsonData with different data types', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_CREATE_NOTIFICATION, true);
+        CHANNEL_METHOD_CREATE_NOTIFICATION,
+        true,
+      );
 
       Map<String, dynamic> mapDataWithDifferentTypes = {
         NOTIFICATION_CONTENT: json.encode({
@@ -217,21 +253,16 @@ void main() {
           'scheduledDate': '2023-01-01T00:00:00.000Z',
         }),
         NOTIFICATION_BUTTONS: json.encode([
-          {
-            'key': 'action_key',
-            'label': 'Action label',
-          },
+          {'key': 'action_key', 'label': 'Action label'},
         ]),
         NOTIFICATION_LOCALIZATIONS: json.encode({
-          'en_US': {
-            'title': 'Localized title',
-            'body': 'Localized body',
-          },
+          'en_US': {'title': 'Localized title', 'body': 'Localized body'},
         }),
       };
 
-      bool result = await awesomeNotifications
-          .createNotificationFromJsonData(mapDataWithDifferentTypes);
+      bool result = await awesomeNotifications.createNotificationFromJsonData(
+        mapDataWithDifferentTypes,
+      );
 
       expect(result, true);
     });
@@ -240,7 +271,9 @@ void main() {
 
     test('decrementGlobalBadgeCounter', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_DECREMENT_BADGE_COUNT, 5);
+        CHANNEL_METHOD_DECREMENT_BADGE_COUNT,
+        5,
+      );
 
       int badgeCount = await awesomeNotifications.decrementGlobalBadgeCounter();
 
@@ -249,29 +282,38 @@ void main() {
 
     test('dismiss', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_DISMISS_NOTIFICATION, null);
+        CHANNEL_METHOD_DISMISS_NOTIFICATION,
+        null,
+      );
 
       await awesomeNotifications.dismiss(1);
     });
 
     test('dismissAllNotifications', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_DISMISS_ALL_NOTIFICATIONS, null);
+        CHANNEL_METHOD_DISMISS_ALL_NOTIFICATIONS,
+        null,
+      );
 
       await awesomeNotifications.dismissAllNotifications();
     });
 
     test('dismissNotificationsByChannelKey', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_CHANNEL_KEY, null);
+        CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_CHANNEL_KEY,
+        null,
+      );
 
-      await awesomeNotifications
-          .dismissNotificationsByChannelKey('test_channel');
+      await awesomeNotifications.dismissNotificationsByChannelKey(
+        'test_channel',
+      );
     });
 
     test('dismissNotificationsByGroupKey', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_GROUP_KEY, null);
+        CHANNEL_METHOD_DISMISS_NOTIFICATIONS_BY_GROUP_KEY,
+        null,
+      );
 
       await awesomeNotifications.dismissNotificationsByGroupKey('test_group');
     });
@@ -280,22 +322,25 @@ void main() {
 
     test('getAppLifeCycle', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_APP_LIFE_CYCLE,
-          NotificationLifeCycle.Terminated.name);
+        CHANNEL_METHOD_GET_APP_LIFE_CYCLE,
+        NotificationLifeCycle.Terminated.name,
+      );
 
-      NotificationLifeCycle lifeCycle =
-          await awesomeNotifications.getAppLifeCycle();
+      NotificationLifeCycle lifeCycle = await awesomeNotifications
+          .getAppLifeCycle();
 
       expect(lifeCycle, NotificationLifeCycle.Terminated);
     });
 
     test('getDrawableData', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_DRAWABLE_DATA,
-          Uint8List.fromList([1, 2, 3, 4, 5]));
+        CHANNEL_METHOD_GET_DRAWABLE_DATA,
+        Uint8List.fromList([1, 2, 3, 4, 5]),
+      );
 
-      Uint8List? drawableData =
-          await awesomeNotifications.getDrawableData('test_drawable_path');
+      Uint8List? drawableData = await awesomeNotifications.getDrawableData(
+        'test_drawable_path',
+      );
 
       expect(drawableData, isNotNull);
       expect(drawableData, isA<Uint8List>());
@@ -304,12 +349,15 @@ void main() {
 
     test('getInitialNotificationAction', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_INITIAL_ACTION,
-          ReceivedAction().fromMap(
-              {'id': 1, 'buttonKeyPressed': 'test_button_key'}).toMap());
+        CHANNEL_METHOD_GET_INITIAL_ACTION,
+        ReceivedAction().fromMap({
+          'id': 1,
+          'buttonKeyPressed': 'test_button_key',
+        }).toMap(),
+      );
 
-      ReceivedAction? initialAction =
-          await awesomeNotifications.getInitialNotificationAction();
+      ReceivedAction? initialAction = await awesomeNotifications
+          .getInitialNotificationAction();
 
       expect(initialAction, isNotNull);
       expect(initialAction, isA<ReceivedAction>());
@@ -319,7 +367,9 @@ void main() {
 
     test('getGlobalBadgeCounter', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_BADGE_COUNT, 7);
+        CHANNEL_METHOD_GET_BADGE_COUNT,
+        7,
+      );
 
       int badgeCount = await awesomeNotifications.getGlobalBadgeCounter();
 
@@ -330,10 +380,12 @@ void main() {
 
     test('getLocalTimeZoneIdentifier', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_LOCAL_TIMEZONE_IDENTIFIER, 'America/New_York');
+        CHANNEL_METHOD_GET_LOCAL_TIMEZONE_IDENTIFIER,
+        'America/New_York',
+      );
 
-      String localTimeZoneIdentifier =
-          await awesomeNotifications.getLocalTimeZoneIdentifier();
+      String localTimeZoneIdentifier = await awesomeNotifications
+          .getLocalTimeZoneIdentifier();
 
       expect(localTimeZoneIdentifier, 'America/New_York');
     });
@@ -342,12 +394,15 @@ void main() {
       DateTime fixedDate = DateTime(2023, 5, 3);
       DateTime expectedNextDate = fixedDate.add(const Duration(days: 1));
 
-      mockMethodChannel.setMockMethodCallHandler(CHANNEL_METHOD_GET_NEXT_DATE,
-          AwesomeDateUtils.parseDateToString(expectedNextDate));
+      mockMethodChannel.setMockMethodCallHandler(
+        CHANNEL_METHOD_GET_NEXT_DATE,
+        AwesomeDateUtils.parseDateToString(expectedNextDate),
+      );
 
       DateTime? nextDate = await awesomeNotifications.getNextDate(
-          NotificationInterval(interval: Duration(seconds: 1)),
-          fixedDate: fixedDate);
+        NotificationInterval(interval: Duration(seconds: 1)),
+        fixedDate: fixedDate,
+      );
 
       expect(nextDate, isNotNull);
       expect(nextDate, expectedNextDate);
@@ -355,17 +410,21 @@ void main() {
 
     test('getUtcTimeZoneIdentifier', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_UTC_TIMEZONE_IDENTIFIER, 'UTC');
+        CHANNEL_METHOD_GET_UTC_TIMEZONE_IDENTIFIER,
+        'UTC',
+      );
 
-      String utcTimeZoneIdentifier =
-          await awesomeNotifications.getUtcTimeZoneIdentifier();
+      String utcTimeZoneIdentifier = await awesomeNotifications
+          .getUtcTimeZoneIdentifier();
 
       expect(utcTimeZoneIdentifier, 'UTC');
     });
 
     test('incrementGlobalBadgeCounter', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_INCREMENT_BADGE_COUNT, 9);
+        CHANNEL_METHOD_INCREMENT_BADGE_COUNT,
+        9,
+      );
 
       int badgeCount = await awesomeNotifications.incrementGlobalBadgeCounter();
 
@@ -375,32 +434,42 @@ void main() {
     test('initialize', () async {
       // Set up the mocked method channel handlers
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_INITIALIZE, true);
+        CHANNEL_METHOD_INITIALIZE,
+        true,
+      );
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_LOCAL_TIMEZONE_IDENTIFIER, 'Local');
+        CHANNEL_METHOD_GET_LOCAL_TIMEZONE_IDENTIFIER,
+        'Local',
+      );
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_UTC_TIMEZONE_IDENTIFIER, 'UTC');
+        CHANNEL_METHOD_GET_UTC_TIMEZONE_IDENTIFIER,
+        'UTC',
+      );
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SET_LOCALIZATION, true);
+        CHANNEL_METHOD_SET_LOCALIZATION,
+        true,
+      );
 
       try {
         await awesomeNotifications.initialize(
           'test_icon',
           [
             NotificationChannel(
-                channelKey: 'test_channel',
-                channelName: 'Test Channel',
-                channelDescription: 'Test Channel Description',
-                defaultColor: const Color(0xFF9D50DD),
-                ledColor: Colors.yellow)
+              channelKey: 'test_channel',
+              channelName: 'Test Channel',
+              channelDescription: 'Test Channel Description',
+              defaultColor: const Color(0xFF9D50DD),
+              ledColor: Colors.yellow,
+            ),
           ],
           channelGroups: [
             NotificationChannelGroup(
-                channelGroupKey: 'test_group',
-                channelGroupName: 'Test Group Name')
+              channelGroupKey: 'test_group',
+              channelGroupName: 'Test Group Name',
+            ),
           ],
           languageCode: 'pt-br',
           debug: true,
@@ -415,16 +484,18 @@ void main() {
           'resource://test_icon',
           [
             NotificationChannel(
-                channelKey: 'test_channel',
-                channelName: 'Test Channel',
-                channelDescription: 'Test Channel Description',
-                defaultColor: const Color(0xFF9D50DD),
-                ledColor: Colors.yellow)
+              channelKey: 'test_channel',
+              channelName: 'Test Channel',
+              channelDescription: 'Test Channel Description',
+              defaultColor: const Color(0xFF9D50DD),
+              ledColor: Colors.yellow,
+            ),
           ],
           channelGroups: [
             NotificationChannelGroup(
-                channelGroupKey: 'test_group',
-                channelGroupName: 'Test Group Name')
+              channelGroupKey: 'test_group',
+              channelGroupName: 'Test Group Name',
+            ),
           ],
           languageCode: 'pt-br',
           debug: true,
@@ -441,29 +512,31 @@ void main() {
 
     test('isNotificationAllowed', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_IS_NOTIFICATION_ALLOWED, () async {
-        return true;
-      });
+        CHANNEL_METHOD_IS_NOTIFICATION_ALLOWED,
+        () async {
+          return true;
+        },
+      );
 
       bool isAllowed = await awesomeNotifications.isNotificationAllowed();
       expect(isAllowed, true);
     });
 
     test('listScheduledNotifications', () async {
-      mockMethodChannel
-          .setMockMethodCallHandler(CHANNEL_METHOD_LIST_ALL_SCHEDULES, [
-        {
-          NOTIFICATION_CONTENT: {
-            NOTIFICATION_CHANNEL_KEY: 'test_channel',
-            NOTIFICATION_ID: 1,
-            NOTIFICATION_TITLE: 'Test Title',
-            NOTIFICATION_BODY: 'Test Body',
+      mockMethodChannel.setMockMethodCallHandler(
+        CHANNEL_METHOD_LIST_ALL_SCHEDULES,
+        [
+          {
+            NOTIFICATION_CONTENT: {
+              NOTIFICATION_CHANNEL_KEY: 'test_channel',
+              NOTIFICATION_ID: 1,
+              NOTIFICATION_TITLE: 'Test Title',
+              NOTIFICATION_BODY: 'Test Body',
+            },
+            NOTIFICATION_SCHEDULE: {NOTIFICATION_SCHEDULE_INTERVAL: 1},
           },
-          NOTIFICATION_SCHEDULE: {
-            NOTIFICATION_SCHEDULE_INTERVAL: 1,
-          }
-        }
-      ]);
+        ],
+      );
 
       List<NotificationModel> scheduledNotifications =
           await awesomeNotifications.listScheduledNotifications();
@@ -473,92 +546,115 @@ void main() {
 
     test('removeChannel', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_REMOVE_NOTIFICATION_CHANNEL, true);
+        CHANNEL_METHOD_REMOVE_NOTIFICATION_CHANNEL,
+        true,
+      );
 
-      bool wasRemoved =
-          await awesomeNotifications.removeChannel('test_channel');
+      bool wasRemoved = await awesomeNotifications.removeChannel(
+        'test_channel',
+      );
       expect(wasRemoved, true);
     });
 
     test('requestPermissionToSendNotifications', () async {
-      mockMethodChannel
-          .setMockMethodCallHandler(CHANNEL_METHOD_REQUEST_NOTIFICATIONS, []);
+      mockMethodChannel.setMockMethodCallHandler(
+        CHANNEL_METHOD_REQUEST_NOTIFICATIONS,
+        [],
+      );
 
       bool isAllowed = await awesomeNotifications
-          .requestPermissionToSendNotifications(permissions: [
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Badge,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]);
+          .requestPermissionToSendNotifications(
+            permissions: [
+              NotificationPermission.Alert,
+              NotificationPermission.Sound,
+              NotificationPermission.Badge,
+              NotificationPermission.Vibration,
+              NotificationPermission.Light,
+            ],
+          );
       expect(isAllowed, true);
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_REQUEST_NOTIFICATIONS, [NotificationPermission.Alert]);
+        CHANNEL_METHOD_REQUEST_NOTIFICATIONS,
+        [NotificationPermission.Alert],
+      );
 
       isAllowed = await awesomeNotifications
-          .requestPermissionToSendNotifications(permissions: [
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Badge,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]);
+          .requestPermissionToSendNotifications(
+            permissions: [
+              NotificationPermission.Alert,
+              NotificationPermission.Sound,
+              NotificationPermission.Badge,
+              NotificationPermission.Vibration,
+              NotificationPermission.Light,
+            ],
+          );
       expect(isAllowed, false);
 
       mockMethodChannel
           .setMockMethodCallHandler(CHANNEL_METHOD_REQUEST_NOTIFICATIONS, [
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Badge,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]);
+            NotificationPermission.Alert,
+            NotificationPermission.Sound,
+            NotificationPermission.Badge,
+            NotificationPermission.Vibration,
+            NotificationPermission.Light,
+          ]);
 
       isAllowed = await awesomeNotifications
-          .requestPermissionToSendNotifications(permissions: [
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Badge,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]);
+          .requestPermissionToSendNotifications(
+            permissions: [
+              NotificationPermission.Alert,
+              NotificationPermission.Sound,
+              NotificationPermission.Badge,
+              NotificationPermission.Vibration,
+              NotificationPermission.Light,
+            ],
+          );
       expect(isAllowed, false);
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_REQUEST_NOTIFICATIONS, null);
+        CHANNEL_METHOD_REQUEST_NOTIFICATIONS,
+        null,
+      );
 
       isAllowed = await awesomeNotifications
-          .requestPermissionToSendNotifications(permissions: [
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Badge,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]);
+          .requestPermissionToSendNotifications(
+            permissions: [
+              NotificationPermission.Alert,
+              NotificationPermission.Sound,
+              NotificationPermission.Badge,
+              NotificationPermission.Vibration,
+              NotificationPermission.Light,
+            ],
+          );
       expect(isAllowed, false);
     });
 
     test('resetGlobalBadge', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_RESET_BADGE, true);
+        CHANNEL_METHOD_RESET_BADGE,
+        true,
+      );
       await awesomeNotifications.resetGlobalBadge();
     });
 
     test('setChannel', () async {
-      mockMethodChannel
-          .setMockMethodCallHandler(CHANNEL_METHOD_SET_NOTIFICATION_CHANNEL,
-              (Map<String, dynamic> parameters) async {
-        expect(parameters[NOTIFICATION_CHANNEL_KEY], 'test_channel');
-        expect(parameters[NOTIFICATION_CHANNEL_NAME], 'Test Channel');
-        expect(parameters[CHANNEL_FORCE_UPDATE], false);
-      });
+      mockMethodChannel.setMockMethodCallHandler(
+        CHANNEL_METHOD_SET_NOTIFICATION_CHANNEL,
+        (Map<String, dynamic> parameters) async {
+          expect(parameters[NOTIFICATION_CHANNEL_KEY], 'test_channel');
+          expect(parameters[NOTIFICATION_CHANNEL_NAME], 'Test Channel');
+          expect(parameters[CHANNEL_FORCE_UPDATE], false);
+        },
+      );
 
-      await awesomeNotifications.setChannel(NotificationChannel(
+      await awesomeNotifications.setChannel(
+        NotificationChannel(
           channelKey: 'test_channel',
           channelName: 'Test Channel',
-          channelDescription: 'Test Channel Description'));
+          channelDescription: 'Test Channel Description',
+        ),
+      );
     });
 
     test('setGlobalBadgeCounter', () async {
@@ -567,7 +663,9 @@ void main() {
 
     test('setListeners', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SET_EVENT_HANDLES, true);
+        CHANNEL_METHOD_SET_EVENT_HANDLES,
+        true,
+      );
       // (Map<String, dynamic> arguments) async {
       //   expect(arguments[CREATED_HANDLE], isNotNull);
       //   expect(arguments[DISPLAYED_HANDLE], isNotNull);
@@ -578,7 +676,9 @@ void main() {
       // });
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SET_EVENT_HANDLES, false);
+        CHANNEL_METHOD_SET_EVENT_HANDLES,
+        false,
+      );
 
       bool result = await awesomeNotifications.setListeners(
         onActionReceivedMethod: onGlobalActionReceivedMethod,
@@ -590,16 +690,22 @@ void main() {
       expect(result, false);
 
       Future<void> onActionReceivedMethod(
-          ReceivedAction receivedAction) async {}
+        ReceivedAction receivedAction,
+      ) async {}
       Future<void> onNotificationCreatedMethod(
-          ReceivedNotification receivedNotification) async {}
+        ReceivedNotification receivedNotification,
+      ) async {}
       Future<void> onNotificationDisplayedMethod(
-          ReceivedNotification receivedNotification) async {}
+        ReceivedNotification receivedNotification,
+      ) async {}
       Future<void> onDismissActionReceivedMethod(
-          ReceivedAction receivedAction) async {}
+        ReceivedAction receivedAction,
+      ) async {}
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SET_EVENT_HANDLES, false);
+        CHANNEL_METHOD_SET_EVENT_HANDLES,
+        false,
+      );
 
       result = await awesomeNotifications.setListeners(
         onActionReceivedMethod: onActionReceivedMethod,
@@ -612,25 +718,28 @@ void main() {
     });
 
     test('shouldShowRationaleToRequest', () async {
-      mockMethodChannel
-          .setMockMethodCallHandler(CHANNEL_METHOD_SHOULD_SHOW_RATIONALE,
-              (Map<String, dynamic> arguments) {
-        expect(arguments[NOTIFICATION_CHANNEL_KEY], null);
-        expect(arguments[NOTIFICATION_PERMISSIONS], isNotNull);
-        return [];
-      });
+      mockMethodChannel.setMockMethodCallHandler(
+        CHANNEL_METHOD_SHOULD_SHOW_RATIONALE,
+        (Map<String, dynamic> arguments) {
+          expect(arguments[NOTIFICATION_CHANNEL_KEY], null);
+          expect(arguments[NOTIFICATION_PERMISSIONS], isNotNull);
+          return [];
+        },
+      );
 
-      List<NotificationPermission> permissions =
-          await awesomeNotifications.shouldShowRationaleToRequest();
+      List<NotificationPermission> permissions = await awesomeNotifications
+          .shouldShowRationaleToRequest();
       expect(permissions, isEmpty);
     });
 
     test('showAlarmPage', () async {
       bool showAlarmPageCalled = false;
-      mockMethodChannel.setMockMethodCallHandler(CHANNEL_METHOD_SHOW_ALARM_PAGE,
-          () async {
-        showAlarmPageCalled = true;
-      });
+      mockMethodChannel.setMockMethodCallHandler(
+        CHANNEL_METHOD_SHOW_ALARM_PAGE,
+        () async {
+          showAlarmPageCalled = true;
+        },
+      );
 
       await awesomeNotifications.showAlarmPage();
       expect(showAlarmPageCalled, true);
@@ -639,9 +748,11 @@ void main() {
     test('showGlobalDndOverridePage', () async {
       bool showGlobalDndOverridePageCalled = false;
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SHOW_GLOBAL_DND_PAGE, () async {
-        showGlobalDndOverridePageCalled = true;
-      });
+        CHANNEL_METHOD_SHOW_GLOBAL_DND_PAGE,
+        () async {
+          showGlobalDndOverridePageCalled = true;
+        },
+      );
 
       await awesomeNotifications.showGlobalDndOverridePage();
       expect(showGlobalDndOverridePageCalled, true);
@@ -650,10 +761,12 @@ void main() {
     test('showNotificationConfigPage', () async {
       bool showNotificationConfigPageCalled = false;
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SHOW_NOTIFICATION_PAGE, (dynamic arguments) async {
-        expect(arguments, null);
-        showNotificationConfigPageCalled = true;
-      });
+        CHANNEL_METHOD_SHOW_NOTIFICATION_PAGE,
+        (dynamic arguments) async {
+          expect(arguments, null);
+          showNotificationConfigPageCalled = true;
+        },
+      );
 
       await awesomeNotifications.showNotificationConfigPage();
       expect(showNotificationConfigPageCalled, true);
@@ -661,7 +774,9 @@ void main() {
 
     test('getLocalization', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_LOCALIZATION, 'en_US');
+        CHANNEL_METHOD_GET_LOCALIZATION,
+        'en_US',
+      );
 
       String localization = await awesomeNotifications.getLocalization();
       expect(localization, 'en_US');
@@ -669,42 +784,51 @@ void main() {
 
     test('setLocalization', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_SET_LOCALIZATION, (dynamic arguments) async {
-        expect(arguments, 'en_US');
-        return true;
-      });
+        CHANNEL_METHOD_SET_LOCALIZATION,
+        (dynamic arguments) async {
+          expect(arguments, 'en_US');
+          return true;
+        },
+      );
 
-      bool success =
-          await awesomeNotifications.setLocalization(languageCode: 'en_US');
+      bool success = await awesomeNotifications.setLocalization(
+        languageCode: 'en_US',
+      );
       expect(success, true);
     });
 
     test('isNotificationActiveOnStatusBar', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_IS_NOTIFICATION_ACTIVE, (dynamic arguments) async {
-        expect(arguments, 1);
-        return true;
-      });
+        CHANNEL_METHOD_IS_NOTIFICATION_ACTIVE,
+        (dynamic arguments) async {
+          expect(arguments, 1);
+          return true;
+        },
+      );
 
-      bool isActive =
-          await awesomeNotifications.isNotificationActiveOnStatusBar(id: 1);
+      bool isActive = await awesomeNotifications
+          .isNotificationActiveOnStatusBar(id: 1);
       expect(isActive, true);
     });
 
     test('getAllActiveNotificationIdsOnStatusBar', () async {
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_ALL_ACTIVE_NOTIFICATION_IDS, () async {
-        return [1, 2, 3];
-      });
+        CHANNEL_METHOD_GET_ALL_ACTIVE_NOTIFICATION_IDS,
+        () async {
+          return [1, 2, 3];
+        },
+      );
 
-      List<int>? ids =
-          await awesomeNotifications.getAllActiveNotificationIdsOnStatusBar();
+      List<int>? ids = await awesomeNotifications
+          .getAllActiveNotificationIdsOnStatusBar();
       expect(ids, [1, 2, 3]);
 
       mockMethodChannel.setMockMethodCallHandler(
-          CHANNEL_METHOD_GET_ALL_ACTIVE_NOTIFICATION_IDS, () async {
-        return null;
-      });
+        CHANNEL_METHOD_GET_ALL_ACTIVE_NOTIFICATION_IDS,
+        () async {
+          return null;
+        },
+      );
 
       ids = await awesomeNotifications.getAllActiveNotificationIdsOnStatusBar();
       expect(ids, []);
@@ -716,11 +840,12 @@ void main() {
       bool createdHandlerCalled = false;
       awesomeNotifications.createdHandler =
           (ReceivedNotification receivedNotification) async {
-        createdHandlerCalled = true;
-      };
+            createdHandlerCalled = true;
+          };
 
       await awesomeNotifications.handleMethod(
-          MethodCall(EVENT_NOTIFICATION_CREATED, notificationData));
+        MethodCall(EVENT_NOTIFICATION_CREATED, notificationData),
+      );
 
       expect(createdHandlerCalled, true);
     });
@@ -731,11 +856,12 @@ void main() {
       bool displayedHandlerCalled = false;
       awesomeNotifications.displayedHandler =
           (ReceivedNotification receivedNotification) async {
-        displayedHandlerCalled = true;
-      };
+            displayedHandlerCalled = true;
+          };
 
       await awesomeNotifications.handleMethod(
-          MethodCall(EVENT_NOTIFICATION_DISPLAYED, notificationData));
+        MethodCall(EVENT_NOTIFICATION_DISPLAYED, notificationData),
+      );
 
       expect(displayedHandlerCalled, true);
     });
@@ -746,11 +872,12 @@ void main() {
       bool dismissedHandlerCalled = false;
       awesomeNotifications.dismissedHandler =
           (ReceivedAction receivedAction) async {
-        dismissedHandlerCalled = true;
-      };
+            dismissedHandlerCalled = true;
+          };
 
-      await awesomeNotifications
-          .handleMethod(MethodCall(EVENT_NOTIFICATION_DISMISSED, actionData));
+      await awesomeNotifications.handleMethod(
+        MethodCall(EVENT_NOTIFICATION_DISMISSED, actionData),
+      );
 
       expect(dismissedHandlerCalled, true);
     });
@@ -761,11 +888,12 @@ void main() {
       bool actionHandlerCalled = false;
       awesomeNotifications.actionHandler =
           (ReceivedAction receivedAction) async {
-        actionHandlerCalled = true;
-      };
+            actionHandlerCalled = true;
+          };
 
-      await awesomeNotifications
-          .handleMethod(MethodCall(EVENT_DEFAULT_ACTION, actionData));
+      await awesomeNotifications.handleMethod(
+        MethodCall(EVENT_DEFAULT_ACTION, actionData),
+      );
 
       expect(actionHandlerCalled, true);
     });
@@ -776,24 +904,29 @@ void main() {
       MockIsolateController isolateController = MockIsolateController();
       IsolateController.singleton = isolateController;
 
-      when(() => isolateController.receiveSilentAction(any()))
-          .thenAnswer((invocation) => Future.value(true));
+      when(
+        () => isolateController.receiveSilentAction(any()),
+      ).thenAnswer((invocation) => Future.value(true));
 
-      await awesomeNotifications
-          .handleMethod(MethodCall(EVENT_SILENT_ACTION, actionData));
+      await awesomeNotifications.handleMethod(
+        MethodCall(EVENT_SILENT_ACTION, actionData),
+      );
 
       verify(() => isolateController.receiveSilentAction(any())).called(1);
 
       actionData['actionType'] = ActionType.SilentBackgroundAction.name;
-      await awesomeNotifications
-          .handleMethod(MethodCall(EVENT_SILENT_ACTION, actionData));
+      await awesomeNotifications.handleMethod(
+        MethodCall(EVENT_SILENT_ACTION, actionData),
+      );
     });
 
     test('_handleMethod: UnsupportedError', () {
       expect(
-          () async => await awesomeNotifications
-              .handleMethod(const MethodCall('unsupported_method', {})),
-          throwsA(isA<UnsupportedError>()));
+        () async => await awesomeNotifications.handleMethod(
+          const MethodCall('unsupported_method', {}),
+        ),
+        throwsA(isA<UnsupportedError>()),
+      );
     });
 
     test('dispose', () async {
@@ -803,10 +936,14 @@ void main() {
 }
 
 Future<void> onGlobalActionReceivedMethod(
-    ReceivedAction receivedAction) async {}
+  ReceivedAction receivedAction,
+) async {}
 Future<void> onGlobalNotificationCreatedMethod(
-    ReceivedNotification receivedNotification) async {}
+  ReceivedNotification receivedNotification,
+) async {}
 Future<void> onGlobalNotificationDisplayedMethod(
-    ReceivedNotification receivedNotification) async {}
+  ReceivedNotification receivedNotification,
+) async {}
 Future<void> onGlobalDismissActionReceivedMethod(
-    ReceivedAction receivedAction) async {}
+  ReceivedAction receivedAction,
+) async {}

@@ -12,14 +12,15 @@ class NotificationInterval extends NotificationSchedule {
   /// [allowWhileIdle] allows the notification to be displayed even when the device is in low battery mode.
   /// [repeats] determines whether the notification should play only once or keep repeating.
   /// [preciseAlarm] enables maximum precision for scheduling notifications at exact times, which may consume more battery. Requires explicit user consent on Android 12 and beyond.
-  NotificationInterval(
-      {required this.interval,
-      String? timeZone,
-      super.allowWhileIdle,
-      super.repeats,
-      super.preciseAlarm = true})
-      : super(
-            timeZone: timeZone ?? AwesomeNotifications.localTimeZoneIdentifier);
+  NotificationInterval({
+    required this.interval,
+    String? timeZone,
+    super.allowWhileIdle,
+    super.repeats,
+    super.preciseAlarm = true,
+  }) : super(
+         timeZone: timeZone ?? AwesomeNotifications.localTimeZoneIdentifier,
+       );
 
   /// Creates a [NotificationInterval] instance from a map of data.
   @override
@@ -27,7 +28,9 @@ class NotificationInterval extends NotificationSchedule {
     super.fromMap(mapData);
 
     interval = AwesomeAssertUtils.extractValue<Duration>(
-        NOTIFICATION_SCHEDULE_INTERVAL, mapData);
+      NOTIFICATION_SCHEDULE_INTERVAL,
+      mapData,
+    );
 
     try {
       validate();
@@ -58,13 +61,15 @@ class NotificationInterval extends NotificationSchedule {
   void validate() {
     if (interval?.isNegative ?? true) {
       throw const AwesomeNotificationsException(
-          message: 'interval must be greater or equal to zero.');
+        message: 'interval must be greater or equal to zero.',
+      );
     }
 
     if (repeats && (interval?.inSeconds ?? 0) < 60) {
       throw const AwesomeNotificationsException(
-          message:
-              'time interval must be greater or equal to 60 seconds if repeating');
+        message:
+            'time interval must be greater or equal to 60 seconds if repeating',
+      );
     }
   }
 }

@@ -10,5 +10,5 @@ enum DefaultRingtoneType {
   Ringtone,
 
   /// Type that refers to sounds that are used for the alarm.
-  Alarm
+  Alarm,
 }

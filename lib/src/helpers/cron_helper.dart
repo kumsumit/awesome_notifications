@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 /// Use the rule bellow to specify your on cron repetition rule or access
 /// the website https://www.baeldung.com/cron-expressions to see more details.
 ///
-/// <second> <minute> <hour> <day-of-month> <month> <day-of-week> <year>
+/// `<second> <minute> <hour> <day-of-month> <month> <day-of-week> <year>`
 ///
-/// OBS: Do not use <day-of-month> and <day-of-week> simultaneously. Chose one of
+/// OBS: Do not use `<day-of-month>` and `<day-of-week>` simultaneously. Chose one of
 /// then, marking the other one with ? tag to be ignored
 class CronHelper {
   /// FACTORY METHODS *********************************************

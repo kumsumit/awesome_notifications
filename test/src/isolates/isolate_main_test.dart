@@ -27,14 +27,16 @@ void main() {
     // Ensure binding is called once
     // verify(() => binding.ensureInitialized()).called(1);
 
-    when(() => channel.invokeMethod<void>(any()))
-        .thenAnswer((invocation) => Future.value());
+    when(
+      () => channel.invokeMethod<void>(any()),
+    ).thenAnswer((invocation) => Future.value());
 
     dartIsolateMain();
 
     // Ensure the CHANNEL_METHOD_PUSH_NEXT_DATA method is invoked
-    verify(() => channel.invokeMethod<void>(CHANNEL_METHOD_PUSH_NEXT_DATA))
-        .called(1);
+    verify(
+      () => channel.invokeMethod<void>(CHANNEL_METHOD_PUSH_NEXT_DATA),
+    ).called(1);
 
     // MockIsolateController mockIsolateController = MockIsolateController();
     // IsolateController.singleton = mockIsolateController;

@@ -25,7 +25,8 @@ class NotificationCalendar extends NotificationSchedule {
 
   /// Millisecond precision is deprecated due to device limitations. This field will be ignored.
   @Deprecated(
-      'Millisecond precision was deprecated, due devices do not provide or ignore such precision. The value will be ignored')
+    'Millisecond precision was deprecated, due devices do not provide or ignore such precision. The value will be ignored',
+  )
   int? millisecond;
 
   /// The day of the week (1 = Monday) for scheduling the notification.
@@ -33,7 +34,8 @@ class NotificationCalendar extends NotificationSchedule {
 
   /// The count of weeks of the month for scheduling. This parameter is now deprecated and will be no longer supported.
   @Deprecated(
-      'The weekOfMonth parameter is deprecated and scheduled for removal in a future release due to unimplemented dependencies expected in versions beyond 1.0.0. It may be reconsidered for inclusion in later versions.')
+    'The weekOfMonth parameter is deprecated and scheduled for removal in a future release due to unimplemented dependencies expected in versions beyond 1.0.0. It may be reconsidered for inclusion in later versions.',
+  )
   int? weekOfMonth;
 
   /// The week of the year for scheduling the notification.
@@ -72,23 +74,24 @@ class NotificationCalendar extends NotificationSchedule {
     super.preciseAlarm = true,
     super.repeats,
   }) : super(
-            timeZone:
-                timeZone ?? AwesomeNotifications.localTimeZoneIdentifier) {
+         timeZone: timeZone ?? AwesomeNotifications.localTimeZoneIdentifier,
+       ) {
     if (weekOfMonth != null) {
       throw UnimplementedError("weekOfMonth is not fully implemented yet");
     }
   }
 
   /// Initializes a [NotificationCalendar] from a [DateTime] object.
-  NotificationCalendar.fromDate(
-      {required DateTime date,
-      super.allowWhileIdle,
-      super.repeats,
-      super.preciseAlarm})
-      : super(
-            timeZone: date.isUtc
-                ? AwesomeNotifications.utcTimeZoneIdentifier
-                : AwesomeNotifications.localTimeZoneIdentifier) {
+  NotificationCalendar.fromDate({
+    required DateTime date,
+    super.allowWhileIdle,
+    super.repeats,
+    super.preciseAlarm,
+  }) : super(
+         timeZone: date.isUtc
+             ? AwesomeNotifications.utcTimeZoneIdentifier
+             : AwesomeNotifications.localTimeZoneIdentifier,
+       ) {
     year = date.year;
     month = date.month;
     day = date.day;
@@ -101,25 +104,45 @@ class NotificationCalendar extends NotificationSchedule {
   @override
   NotificationCalendar? fromMap(Map<String, dynamic> mapData) {
     era = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_ERA, mapData);
+      NOTIFICATION_SCHEDULE_ERA,
+      mapData,
+    );
     year = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_YEAR, mapData);
+      NOTIFICATION_SCHEDULE_YEAR,
+      mapData,
+    );
     month = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_MONTH, mapData);
+      NOTIFICATION_SCHEDULE_MONTH,
+      mapData,
+    );
     day = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_DAY, mapData);
+      NOTIFICATION_SCHEDULE_DAY,
+      mapData,
+    );
     hour = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_HOUR, mapData);
+      NOTIFICATION_SCHEDULE_HOUR,
+      mapData,
+    );
     minute = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_MINUTE, mapData);
+      NOTIFICATION_SCHEDULE_MINUTE,
+      mapData,
+    );
     second = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_SECOND, mapData);
+      NOTIFICATION_SCHEDULE_SECOND,
+      mapData,
+    );
     weekday = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_WEEKDAY, mapData);
+      NOTIFICATION_SCHEDULE_WEEKDAY,
+      mapData,
+    );
     weekOfMonth = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_WEEKOFMONTH, mapData);
+      NOTIFICATION_SCHEDULE_WEEKOFMONTH,
+      mapData,
+    );
     weekOfYear = AwesomeAssertUtils.extractValue<int>(
-        NOTIFICATION_SCHEDULE_WEEKOFYEAR, mapData);
+      NOTIFICATION_SCHEDULE_WEEKOFYEAR,
+      mapData,
+    );
 
     super.fromMap(mapData);
 
@@ -146,7 +169,7 @@ class NotificationCalendar extends NotificationSchedule {
         NOTIFICATION_SCHEDULE_SECOND: second,
         NOTIFICATION_SCHEDULE_WEEKDAY: weekday,
         NOTIFICATION_SCHEDULE_WEEKOFMONTH: weekOfMonth,
-        NOTIFICATION_SCHEDULE_WEEKOFYEAR: weekOfYear
+        NOTIFICATION_SCHEDULE_WEEKOFYEAR: weekOfYear,
       });
 
     return dataMap;
@@ -175,7 +198,8 @@ class NotificationCalendar extends NotificationSchedule {
         weekOfMonth == null &&
         weekOfYear == null) {
       throw const AwesomeNotificationsException(
-          message: 'At least one shedule time condition is required.');
+        message: 'At least one shedule time condition is required.',
+      );
     }
 
     if (weekOfMonth != null) {
@@ -193,8 +217,8 @@ class NotificationCalendar extends NotificationSchedule {
         (weekOfMonth ?? 0) < 0 ||
         (weekOfYear ?? 0) < 0) {
       throw const AwesomeNotificationsException(
-          message:
-              'A shedule time condition must be greater or equal to zero.');
+        message: 'A shedule time condition must be greater or equal to zero.',
+      );
     }
   }
 }

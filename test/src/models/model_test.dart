@@ -9,20 +9,14 @@ class TestModel extends Model {
 
   @override
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-    };
+    return {'id': id, 'name': name};
   }
 
   @override
   TestModel? fromMap(Map<String, dynamic> mapData) {
     if (mapData.isEmpty) return null;
 
-    return TestModel(
-      id: mapData['id'],
-      name: mapData['name'],
-    );
+    return TestModel(id: mapData['id'], name: mapData['name']);
   }
 
   @override

@@ -36,14 +36,11 @@ class NotificationModel extends Model {
   /// Creates a new instance of the [NotificationModel] class with the given
   /// content, schedule, action buttons, and localizations.
   NotificationModel({
-    NotificationContent? content,
-    NotificationSchedule? schedule,
-    List<NotificationActionButton>? actionButtons,
-    Map<String, NotificationLocalization>? localizations,
-  })  : _content = content,
-        _schedule = schedule,
-        _actionButtons = actionButtons,
-        _localizations = localizations;
+    this._content,
+    this._schedule,
+    this._actionButtons,
+    this._localizations,
+  });
 
   /// Imports data from a serializable object
   @override
@@ -62,8 +59,10 @@ class NotificationModel extends Model {
   NotificationContent _extractContentFromMap(Map<String, dynamic> mapData) {
     assert(mapData[NOTIFICATION_CONTENT] is Map);
 
-    NotificationContent? content = NotificationContent(id: 0, channelKey: '')
-        .fromMap(Map<String, dynamic>.from(mapData[NOTIFICATION_CONTENT]));
+    NotificationContent? content = NotificationContent(
+      id: 0,
+      channelKey: '',
+    ).fromMap(Map<String, dynamic>.from(mapData[NOTIFICATION_CONTENT]));
     assert(content != null);
 
     return content!..validate();
@@ -74,7 +73,8 @@ class NotificationModel extends Model {
     if (mapData[NOTIFICATION_SCHEDULE].isEmpty) return null;
 
     Map<String, dynamic> scheduleData = Map<String, dynamic>.from(
-        Map<String, dynamic>.from(mapData[NOTIFICATION_SCHEDULE]));
+      Map<String, dynamic>.from(mapData[NOTIFICATION_SCHEDULE]),
+    );
 
     if (scheduleData.containsKey(NOTIFICATION_SCHEDULE_INTERVAL)) {
       return NotificationInterval(interval: Duration.zero).fromMap(scheduleData)
@@ -90,16 +90,17 @@ class NotificationModel extends Model {
   }
 
   List<NotificationActionButton>? _extractButtonsFromMap(
-      Map<String, dynamic> mapData) {
+    Map<String, dynamic> mapData,
+  ) {
     if (mapData[NOTIFICATION_BUTTONS] is! List) return null;
     if (mapData[NOTIFICATION_BUTTONS].isEmpty) return null;
 
     List<NotificationActionButton> finalList = [];
     for (dynamic buttonData in mapData[NOTIFICATION_BUTTONS]) {
-      NotificationActionButton? actionButton =
-          NotificationActionButton(label: '', key: '')
-              .fromMap(Map<String, dynamic>.from(buttonData))
-            ?..validate();
+      NotificationActionButton? actionButton = NotificationActionButton(
+        label: '',
+        key: '',
+      ).fromMap(Map<String, dynamic>.from(buttonData))?..validate();
       if (actionButton == null) continue;
       finalList.add(actionButton);
     }
@@ -108,7 +109,8 @@ class NotificationModel extends Model {
   }
 
   Map<String, NotificationLocalization>? _extractLocalizationsFromMap(
-      Map<String, dynamic> mapData) {
+    Map<String, dynamic> mapData,
+  ) {
     if (mapData[NOTIFICATION_LOCALIZATIONS] is! Map<String, dynamic>) {
       return null;
     }
@@ -132,28 +134,27 @@ class NotificationModel extends Model {
   /// Exports all content into a serializable object
   @override
   Map<String, dynamic> toMap() => {
-        NOTIFICATION_CONTENT: _content?.toMap() ?? {},
-        if (_schedule != null) NOTIFICATION_SCHEDULE: _schedule!.toMap(),
-        if (_actionButtons?.isNotEmpty ?? false)
-          NOTIFICATION_BUTTONS: [
-            for (NotificationActionButton button in _actionButtons!)
-              button.toMap()
-          ],
-        if (_localizations?.isNotEmpty ?? false)
-          NOTIFICATION_LOCALIZATIONS: {
-            for (MapEntry<String, NotificationLocalization> localization
-                in _localizations!.entries)
-              localization.key: localization.value.toMap()
-          },
-      };
+    NOTIFICATION_CONTENT: _content?.toMap() ?? {},
+    if (_schedule != null) NOTIFICATION_SCHEDULE: _schedule!.toMap(),
+    if (_actionButtons?.isNotEmpty ?? false)
+      NOTIFICATION_BUTTONS: [
+        for (NotificationActionButton button in _actionButtons!) button.toMap(),
+      ],
+    if (_localizations?.isNotEmpty ?? false)
+      NOTIFICATION_LOCALIZATIONS: {
+        for (MapEntry<String, NotificationLocalization> localization
+            in _localizations!.entries)
+          localization.key: localization.value.toMap(),
+      },
+  };
 
   @override
-
   /// Validates if the models has all the requirements to be considered valid
   void validate() {
     if (_content == null) {
       throw const AwesomeNotificationsException(
-          message: 'content is required.');
+        message: 'content is required.',
+      );
     }
   }
 }

@@ -14,21 +14,32 @@ class ReceivedNotification extends BaseNotificationContent {
     super.fromMap(mapData);
 
     createdDate = AwesomeAssertUtils.extractValue<DateTime>(
-        NOTIFICATION_CREATED_DATE, mapData);
+      NOTIFICATION_CREATED_DATE,
+      mapData,
+    );
 
     displayedDate = AwesomeAssertUtils.extractValue<DateTime>(
-        NOTIFICATION_DISPLAYED_DATE, mapData);
+      NOTIFICATION_DISPLAYED_DATE,
+      mapData,
+    );
 
     createdSource = AwesomeAssertUtils.extractEnum<NotificationSource>(
-        NOTIFICATION_CREATED_SOURCE, mapData, NotificationSource.values);
+      NOTIFICATION_CREATED_SOURCE,
+      mapData,
+      NotificationSource.values,
+    );
 
     createdLifeCycle = AwesomeAssertUtils.extractEnum<NotificationLifeCycle>(
-        NOTIFICATION_CREATED_LIFECYCLE, mapData, NotificationLifeCycle.values);
+      NOTIFICATION_CREATED_LIFECYCLE,
+      mapData,
+      NotificationLifeCycle.values,
+    );
 
     displayedLifeCycle = AwesomeAssertUtils.extractEnum<NotificationLifeCycle>(
-        NOTIFICATION_DISPLAYED_LIFECYCLE,
-        mapData,
-        NotificationLifeCycle.values);
+      NOTIFICATION_DISPLAYED_LIFECYCLE,
+      mapData,
+      NotificationLifeCycle.values,
+    );
 
     return this;
   }
@@ -37,15 +48,16 @@ class ReceivedNotification extends BaseNotificationContent {
   @override
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = super.toMap();
-    return map
-      ..addAll({
-        NOTIFICATION_CREATED_SOURCE: createdSource?.name,
-        NOTIFICATION_CREATED_LIFECYCLE: createdLifeCycle?.name,
-        NOTIFICATION_DISPLAYED_LIFECYCLE: displayedLifeCycle?.name,
-        NOTIFICATION_CREATED_DATE:
-            AwesomeDateUtils.parseDateToString(createdDate),
-        NOTIFICATION_DISPLAYED_DATE:
-            AwesomeDateUtils.parseDateToString(displayedDate),
-      });
+    return map..addAll({
+      NOTIFICATION_CREATED_SOURCE: createdSource?.name,
+      NOTIFICATION_CREATED_LIFECYCLE: createdLifeCycle?.name,
+      NOTIFICATION_DISPLAYED_LIFECYCLE: displayedLifeCycle?.name,
+      NOTIFICATION_CREATED_DATE: AwesomeDateUtils.parseDateToString(
+        createdDate,
+      ),
+      NOTIFICATION_DISPLAYED_DATE: AwesomeDateUtils.parseDateToString(
+        displayedDate,
+      ),
+    });
   }
 }

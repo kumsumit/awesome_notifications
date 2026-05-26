@@ -30,5 +30,5 @@ enum ActionType {
 
   /// Behaves as the same way as a user dismiss action, dismissing the respective notification
   /// and firing dismissMethod. Ignores autoDismissible property.
-  DismissAction
+  DismissAction,
 }

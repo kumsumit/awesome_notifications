@@ -4,32 +4,27 @@ import 'dart:math';
 import 'package:awesome_notifications_example/models/media_model.dart';
 import 'package:awesome_notifications_example/utils/playback_timer.dart';
 
-enum MediaLifeCycle {
-  stopped,
-  paused,
-  playing,
-}
+enum MediaLifeCycle { stopped, paused, playing }
 
 class MediaPlayerCentral {
-
   static final PlaybackTimer _timer = PlaybackTimer(
-      onDone: (Duration duration){
-        if(hasNextMedia) {
-          nextMedia();
-        } else {
-          stop();
-        }
-      },
-      onData: (Duration duration){
-        _mediaProgress.add(_timer.now);
+    onDone: (Duration duration) {
+      if (hasNextMedia) {
+        nextMedia();
+      } else {
+        stop();
       }
+    },
+    onData: (Duration duration) {
+      _mediaProgress.add(_timer.now);
+    },
   );
 
-  static String getCloseCaption(Duration duration){
-    if( currentMedia?.closeCaption.isEmpty ?? true ) return '';
+  static String getCloseCaption(Duration duration) {
+    if (currentMedia?.closeCaption.isEmpty ?? true) return '';
 
-    for(CloseCaptionElement cc in currentMedia!.closeCaption){
-      if(cc.start <= duration && cc.end >= duration) return cc.subtitle;
+    for (CloseCaptionElement cc in currentMedia!.closeCaption) {
+      if (cc.start <= duration && cc.end >= duration) return cc.subtitle;
     }
 
     return '';
@@ -83,22 +78,20 @@ class MediaPlayerCentral {
     }
     return _mediaBroadcaster.stream;
   }
+
   static Stream get progressStream {
     if (_mediaProgress.isClosed) {
       _mediaProgress = StreamController<Duration>.broadcast();
     }
     return _mediaProgress.stream;
   }
+
   static StreamSink get mediaSink => _mediaBroadcaster.sink;
   static StreamSink get progressSink => _mediaProgress.sink;
 
-  static void _broadcastChanges(){
-    _mediaBroadcaster.sink.add(
-        currentMedia!
-    );
-    _mediaProgress.sink.add(
-        _timer.now
-    );
+  static void _broadcastChanges() {
+    _mediaBroadcaster.sink.add(currentMedia!);
+    _mediaProgress.sink.add(_timer.now);
   }
 
   static void add(MediaModel newMedia) {
@@ -207,5 +200,5 @@ class MediaPlayerCentral {
     _broadcastChanges();
   }
 
-  dispose() {}
+  void dispose() {}
 }

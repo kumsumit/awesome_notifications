@@ -13,8 +13,8 @@ void main() {
         NOTIFICATION_BUTTON_LABELS: {'key1': 'Label1', 'key2': 'Label2'},
       };
 
-      NotificationLocalization? localization =
-          NotificationLocalization().fromMap(data);
+      NotificationLocalization? localization = NotificationLocalization()
+          .fromMap(data);
 
       expect(localization, isNotNull);
       expect(localization?.title, 'Title');
@@ -26,15 +26,16 @@ void main() {
     });
 
     test(
-        'should not create an empty NotificationLocalization object when given an empty map',
-        () {
-      Map<String, dynamic> data = {};
+      'should not create an empty NotificationLocalization object when given an empty map',
+      () {
+        Map<String, dynamic> data = {};
 
-      NotificationLocalization? localization =
-          NotificationLocalization().fromMap(data);
+        NotificationLocalization? localization = NotificationLocalization()
+            .fromMap(data);
 
-      expect(localization, isNull);
-    });
+        expect(localization, isNull);
+      },
+    );
 
     test('should convert a NotificationLocalization object to a map', () {
       NotificationLocalization localization = NotificationLocalization(
@@ -53,31 +54,34 @@ void main() {
       expect(data[NOTIFICATION_SUMMARY], 'Summary');
       expect(data[NOTIFICATION_LARGE_ICON], 'LargeIcon');
       expect(data[NOTIFICATION_BIG_PICTURE], 'BigPicture');
-      expect(data[NOTIFICATION_BUTTON_LABELS],
-          {'key1': 'Label1', 'key2': 'Label2'});
+      expect(data[NOTIFICATION_BUTTON_LABELS], {
+        'key1': 'Label1',
+        'key2': 'Label2',
+      });
     });
 
     test(
-        'should not include null or empty values in the map when converting a NotificationLocalization object to a map',
-        () {
-      NotificationLocalization localization = NotificationLocalization(
-        title: null,
-        body: '',
-        summary: null,
-        largeIcon: null,
-        bigPicture: null,
-        buttonLabels: null,
-      );
+      'should not include null or empty values in the map when converting a NotificationLocalization object to a map',
+      () {
+        NotificationLocalization localization = NotificationLocalization(
+          title: null,
+          body: '',
+          summary: null,
+          largeIcon: null,
+          bigPicture: null,
+          buttonLabels: null,
+        );
 
-      Map<String, dynamic> data = localization.toMap();
+        Map<String, dynamic> data = localization.toMap();
 
-      expect(data.containsKey(NOTIFICATION_TITLE), false);
-      expect(data.containsKey(NOTIFICATION_BODY), false);
-      expect(data.containsKey(NOTIFICATION_SUMMARY), false);
-      expect(data.containsKey(NOTIFICATION_LARGE_ICON), false);
-      expect(data.containsKey(NOTIFICATION_BIG_PICTURE), false);
-      expect(data.containsKey(NOTIFICATION_BUTTON_LABELS), false);
-    });
+        expect(data.containsKey(NOTIFICATION_TITLE), false);
+        expect(data.containsKey(NOTIFICATION_BODY), false);
+        expect(data.containsKey(NOTIFICATION_SUMMARY), false);
+        expect(data.containsKey(NOTIFICATION_LARGE_ICON), false);
+        expect(data.containsKey(NOTIFICATION_BIG_PICTURE), false);
+        expect(data.containsKey(NOTIFICATION_BUTTON_LABELS), false);
+      },
+    );
   });
 
   test('validate tests', () {

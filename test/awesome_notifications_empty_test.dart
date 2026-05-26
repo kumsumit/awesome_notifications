@@ -45,14 +45,14 @@ void main() {
     });
 
     test('checkPermissionList method', () async {
-      List<NotificationPermission> result =
-          await notifications.checkPermissionList();
+      List<NotificationPermission> result = await notifications
+          .checkPermissionList();
       expect(result, [
         NotificationPermission.Badge,
         NotificationPermission.Alert,
         NotificationPermission.Sound,
         NotificationPermission.Vibration,
-        NotificationPermission.Light
+        NotificationPermission.Light,
       ]);
     });
 
@@ -103,8 +103,8 @@ void main() {
     });
 
     test('getInitialNotificationAction method', () async {
-      ReceivedAction? result =
-          await notifications.getInitialNotificationAction();
+      ReceivedAction? result = await notifications
+          .getInitialNotificationAction();
       expect(result, null);
     });
 
@@ -136,10 +136,7 @@ void main() {
     });
 
     test('initialize method', () async {
-      bool result = await notifications.initialize(
-        'defaultIcon',
-        [],
-      );
+      bool result = await notifications.initialize('defaultIcon', []);
       expect(result, true);
     });
 
@@ -149,8 +146,8 @@ void main() {
     });
 
     test('listScheduledNotifications method', () async {
-      List<NotificationModel> result =
-          await notifications.listScheduledNotifications();
+      List<NotificationModel> result = await notifications
+          .listScheduledNotifications();
       expect(result, []);
     });
 
@@ -190,8 +187,8 @@ void main() {
     });
 
     test('shouldShowRationaleToRequest method', () async {
-      List<NotificationPermission> result =
-          await notifications.shouldShowRationaleToRequest();
+      List<NotificationPermission> result = await notifications
+          .shouldShowRationaleToRequest();
       expect(result, []);
     });
 
@@ -213,9 +210,7 @@ void main() {
     });
 
     test('setLocalization method', () async {
-      bool result = await notifications.setLocalization(
-        languageCode: 'en',
-      );
+      bool result = await notifications.setLocalization(languageCode: 'en');
       expect(result, false);
     });
 
@@ -225,8 +220,8 @@ void main() {
     });
 
     test('getAllActiveNotificationIdsOnStatusBar method', () async {
-      List<int> result =
-          await notifications.getAllActiveNotificationIdsOnStatusBar();
+      List<int> result = await notifications
+          .getAllActiveNotificationIdsOnStatusBar();
       expect(result, []);
     });
 

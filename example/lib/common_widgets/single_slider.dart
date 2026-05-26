@@ -53,7 +53,7 @@ class SingleSliderToConfirm extends StatefulWidget {
   final bool stickToEnd;
 
   const SingleSliderToConfirm({
-    Key? key,
+    super.key,
     this.height = 70,
     this.width = 300,
     this.backgroundColor = Colors.white,
@@ -96,7 +96,7 @@ class SingleSliderToConfirmState extends State<SingleSliderToConfirm> {
     }
   }
 
-  void updatePosition(details) {
+  void updatePosition(Object details) {
     if (details is DragEndDetails) {
       setState(() {
         _duration = 600;
@@ -114,7 +114,7 @@ class SingleSliderToConfirmState extends State<SingleSliderToConfirm> {
     }
   }
 
-  void sliderReleased(details) {
+  void sliderReleased(DragEndDetails details) {
     if (_position > widget.width - widget.height) {
       widget.onConfirmation();
     }
@@ -134,12 +134,23 @@ class SingleSliderToConfirmState extends State<SingleSliderToConfirm> {
         percent = 0.0;
       }
 
-      int red = widget.backgroundColorEnd!.red;
-      int green = widget.backgroundColorEnd!.green;
-      int blue = widget.backgroundColorEnd!.blue;
+      int red = (widget.backgroundColorEnd!.r * 255.0)
+          .round()
+          .clamp(0, 255)
+          .toInt();
+      int green = (widget.backgroundColorEnd!.g * 255.0)
+          .round()
+          .clamp(0, 255)
+          .toInt();
+      int blue = (widget.backgroundColorEnd!.b * 255.0)
+          .round()
+          .clamp(0, 255)
+          .toInt();
 
       return Color.alphaBlend(
-          Color.fromRGBO(red, green, blue, percent), widget.backgroundColor);
+        Color.fromRGBO(red, green, blue, percent),
+        widget.backgroundColor,
+      );
     } else {
       return widget.backgroundColor;
     }
@@ -161,10 +172,7 @@ class SingleSliderToConfirmState extends State<SingleSliderToConfirm> {
 
     TextStyle style;
     if (widget.textStyle == null) {
-      style = TextStyle(
-        color: Colors.black26,
-        fontWeight: FontWeight.bold,
-      );
+      style = TextStyle(color: Colors.black26, fontWeight: FontWeight.bold);
     } else {
       style = widget.textStyle!;
     }
@@ -176,10 +184,11 @@ class SingleSliderToConfirmState extends State<SingleSliderToConfirm> {
       width: widget.width,
       padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
-        borderRadius: widget.backgroundShape ??
+        borderRadius:
+            widget.backgroundShape ??
             BorderRadius.all(Radius.circular(widget.height)),
         color: widget.backgroundColorEnd != null
-            ? this.calculateBackground()
+            ? calculateBackground()
             : widget.backgroundColor,
         boxShadow: <BoxShadow>[shadow],
       ),
@@ -226,7 +235,8 @@ class SingleSliderToConfirmState extends State<SingleSliderToConfirm> {
                 height: widget.height - 10,
                 width: widget.height - 10,
                 decoration: BoxDecoration(
-                  borderRadius: widget.foregroundShape ??
+                  borderRadius:
+                      widget.foregroundShape ??
                       BorderRadius.all(Radius.circular(widget.height / 2)),
                   color: widget.foregroundColor,
                 ),

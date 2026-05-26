@@ -15,17 +15,12 @@ class BitmapHelper {
   BitmapHelper.fromHeadless(this.width, this.height, this.content);
 
   BitmapHelper.fromHeadful(this.width, this.height, Uint8List headedIntList)
-      : content = headedIntList.sublist(
-          RGBA32HeaderSize,
-          headedIntList.length,
-        );
+    : content = headedIntList.sublist(RGBA32HeaderSize, headedIntList.length);
 
-  BitmapHelper.blank(
-    this.width,
-    this.height,
-  ) : content = Uint8List.fromList(
-          List.filled(width * height * bitmapPixelLength, 0),
-        );
+  BitmapHelper.blank(this.width, this.height)
+    : content = Uint8List.fromList(
+        List.filled(width * height * bitmapPixelLength, 0),
+      );
 
   final int width;
   final int height;
@@ -44,8 +39,10 @@ class BitmapHelper {
   static Future<BitmapHelper> fromImageProvider(ImageProvider provider) async {
     final Completer completer = Completer<ImageInfo>();
     final ImageStream stream = provider.resolve(const ImageConfiguration());
-    final listener =
-        ImageStreamListener((ImageInfo info, bool synchronousCall) {
+    final listener = ImageStreamListener((
+      ImageInfo info,
+      bool synchronousCall,
+    ) {
       if (!completer.isCompleted) {
         completer.complete(info);
       }
@@ -101,11 +98,7 @@ class RGBA32BitmapHeader {
   int contentSize;
 
   void applyContent(Uint8List contentIntList) {
-    headerIntList.setRange(
-      RGBA32HeaderSize,
-      fileLength,
-      contentIntList,
-    );
+    headerIntList.setRange(RGBA32HeaderSize, fileLength, contentIntList);
   }
 
   late Uint8List headerIntList;

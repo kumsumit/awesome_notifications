@@ -94,29 +94,19 @@ class NotificationActionButton extends Model {
   /// [isDangerousOption]: Marks the button as representing a dangerous choice.
   /// [color]: Color of the button.
   /// [actionType]: Type of action associated with the button.
-  NotificationActionButton(
-      {required String key,
-      required String label,
-      String? icon,
-      bool enabled = true,
-      bool requireInputText = false,
-      bool autoDismissible = true,
-      bool showInCompactView = false,
-      bool isDangerousOption = false,
-      bool isAuthenticationRequired = false,
-      Color? color,
-      ActionType actionType = ActionType.Default})
-      : _key = key,
-        _label = label,
-        _icon = icon,
-        _enabled = enabled,
-        _requireInputText = requireInputText,
-        _autoDismissible = autoDismissible,
-        _showInCompactView = showInCompactView,
-        _isDangerousOption = isDangerousOption,
-        _isAuthenticationRequired = isAuthenticationRequired,
-        _color = color,
-        _actionType = actionType {
+  NotificationActionButton({
+    required String this._key,
+    required String this._label,
+    this._icon,
+    bool this._enabled = true,
+    this._requireInputText = false,
+    bool this._autoDismissible = true,
+    bool this._showInCompactView = false,
+    bool this._isDangerousOption = false,
+    bool this._isAuthenticationRequired = false,
+    this._color,
+    ActionType this._actionType = ActionType.Default,
+  }) {
     // Adapting input type to 0.7.0 pattern
     adaptInputFieldToRequireText();
   }
@@ -128,24 +118,43 @@ class NotificationActionButton extends Model {
     _key = AwesomeAssertUtils.extractValue<String>(NOTIFICATION_KEY, mapData);
     _icon = AwesomeAssertUtils.extractValue<String>(NOTIFICATION_ICON, mapData);
     _label = AwesomeAssertUtils.extractValue<String>(
-        NOTIFICATION_BUTTON_LABEL, mapData);
-    _enabled =
-        AwesomeAssertUtils.extractValue<bool>(NOTIFICATION_ENABLED, mapData);
+      NOTIFICATION_BUTTON_LABEL,
+      mapData,
+    );
+    _enabled = AwesomeAssertUtils.extractValue<bool>(
+      NOTIFICATION_ENABLED,
+      mapData,
+    );
     _requireInputText = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_REQUIRE_INPUT_TEXT, mapData);
+      NOTIFICATION_REQUIRE_INPUT_TEXT,
+      mapData,
+    );
     _autoDismissible = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_AUTO_DISMISSIBLE, mapData);
+      NOTIFICATION_AUTO_DISMISSIBLE,
+      mapData,
+    );
     _showInCompactView = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_SHOW_IN_COMPACT_VIEW, mapData);
+      NOTIFICATION_SHOW_IN_COMPACT_VIEW,
+      mapData,
+    );
     _isDangerousOption = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_IS_DANGEROUS_OPTION, mapData);
+      NOTIFICATION_IS_DANGEROUS_OPTION,
+      mapData,
+    );
     _actionType = AwesomeAssertUtils.extractEnum<ActionType>(
-        NOTIFICATION_ACTION_TYPE, mapData, ActionType.values);
+      NOTIFICATION_ACTION_TYPE,
+      mapData,
+      ActionType.values,
+    );
     _isAuthenticationRequired = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_AUTHENTICATION_REQUIRED, mapData);
+      NOTIFICATION_AUTHENTICATION_REQUIRED,
+      mapData,
+    );
 
-    _color =
-        AwesomeAssertUtils.extractValue<Color>(NOTIFICATION_COLOR, mapData);
+    _color = AwesomeAssertUtils.extractValue<Color>(
+      NOTIFICATION_COLOR,
+      mapData,
+    );
 
     return this;
   }
@@ -154,8 +163,9 @@ class NotificationActionButton extends Model {
   @visibleForTesting
   void processRetroCompatibility(Map<String, dynamic> dataMap) {
     if (dataMap.containsKey("autoCancel")) {
-      developer
-          .log("autoCancel is deprecated. Please use autoDismissible instead.");
+      developer.log(
+        "autoCancel is deprecated. Please use autoDismissible instead.",
+      );
       dataMap[NOTIFICATION_AUTO_DISMISSIBLE] =
           AwesomeAssertUtils.extractValue<bool>('autoCancel', dataMap);
     }
@@ -163,7 +173,10 @@ class NotificationActionButton extends Model {
     if (dataMap.containsKey("buttonType")) {
       developer.log("buttonType is deprecated. Please use actionType instead.");
       _actionType = AwesomeAssertUtils.extractEnum<ActionType>(
-          "buttonType", dataMap, ActionType.values);
+        "buttonType",
+        dataMap,
+        ActionType.values,
+      );
     }
 
     adaptInputFieldToRequireText();
@@ -175,7 +188,8 @@ class NotificationActionButton extends Model {
     // ignore: deprecated_member_use_from_same_package
     if (_actionType == ActionType.InputField) {
       developer.log(
-          "InputField is deprecated. Please use requireInputText instead.");
+        "InputField is deprecated. Please use requireInputText instead.",
+      );
       _requireInputText = true;
       _actionType = ActionType.SilentAction;
     }
@@ -196,8 +210,8 @@ class NotificationActionButton extends Model {
       NOTIFICATION_SHOW_IN_COMPACT_VIEW: _showInCompactView,
       NOTIFICATION_IS_DANGEROUS_OPTION: _isDangerousOption,
       NOTIFICATION_ACTION_TYPE: _actionType?.name,
-      NOTIFICATION_COLOR: _color?.value,
-      NOTIFICATION_AUTHENTICATION_REQUIRED: _isAuthenticationRequired
+      NOTIFICATION_COLOR: _color?.toARGB32(),
+      NOTIFICATION_AUTHENTICATION_REQUIRED: _isAuthenticationRequired,
     };
   }
 
@@ -211,15 +225,17 @@ class NotificationActionButton extends Model {
     }
     if (AwesomeAssertUtils.isNullOrEmptyOrInvalid(_label)) {
       throw const AwesomeNotificationsException(
-          message: 'label id is required');
+        message: 'label id is required',
+      );
     }
 
     // For action buttons, it's only allowed resource media types
     if (!AwesomeStringUtils.isNullOrEmpty(_icon) &&
         AwesomeBitmapUtils().getMediaSource(_icon!) != MediaSource.Resource) {
       throw const AwesomeNotificationsException(
-          message:
-              'icons for action buttons must be a native resource media type');
+        message:
+            'icons for action buttons must be a native resource media type',
+      );
     }
   }
 }

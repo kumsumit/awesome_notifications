@@ -10,5 +10,5 @@ enum GroupAlertBehavior {
   Summary,
 
   /// The summary notification in a group should be silenced (no sound or vibration) even if they would otherwise make sound or vibrate
-  Children
+  Children,
 }

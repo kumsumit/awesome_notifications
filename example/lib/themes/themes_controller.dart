@@ -17,35 +17,61 @@ class ThemesController {
       disabledColor: Colors.grey,
 
       appBarTheme: AppBarTheme(
-          color: Colors.white,
-          elevation: 0,
-          iconTheme: IconThemeData(
-            color: App.mainColor,
-          )),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: IconThemeData(color: App.mainColor),
+      ),
 
       fontFamily: 'Robot',
 
       // Define the default TextTheme. Use this to specify the default
       // text styling for headlines, titles, bodies of text, and more.
       textTheme: const TextTheme(
-        displayLarge:
-            TextStyle(fontSize: 64.0, height: 1.5, fontWeight: FontWeight.w500),
-        displayMedium:
-            TextStyle(fontSize: 52.0, height: 1.5, fontWeight: FontWeight.w500),
-        displaySmall:
-            TextStyle(fontSize: 48.0, height: 1.5, fontWeight: FontWeight.w500),
-        headlineMedium:
-            TextStyle(fontSize: 32.0, height: 1.5, fontWeight: FontWeight.w500),
-        headlineSmall:
-            TextStyle(fontSize: 28.0, height: 1.5, fontWeight: FontWeight.w500),
-        titleLarge:
-            TextStyle(fontSize: 22.0, height: 1.5, fontWeight: FontWeight.w500),
-        titleMedium:
-            TextStyle(fontSize: 18.0, height: 1.5, color: Colors.black54),
-        titleSmall:
-            TextStyle(fontSize: 12.0, height: 1.5, color: Colors.black54),
-        labelLarge:
-            TextStyle(fontSize: 16.0, height: 1.5, color: Colors.black54),
+        displayLarge: TextStyle(
+          fontSize: 64.0,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+        ),
+        displayMedium: TextStyle(
+          fontSize: 52.0,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+        ),
+        displaySmall: TextStyle(
+          fontSize: 48.0,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+        ),
+        headlineMedium: TextStyle(
+          fontSize: 32.0,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+        ),
+        headlineSmall: TextStyle(
+          fontSize: 28.0,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 22.0,
+          height: 1.5,
+          fontWeight: FontWeight.w500,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 18.0,
+          height: 1.5,
+          color: Colors.black54,
+        ),
+        titleSmall: TextStyle(
+          fontSize: 12.0,
+          height: 1.5,
+          color: Colors.black54,
+        ),
+        labelLarge: TextStyle(
+          fontSize: 16.0,
+          height: 1.5,
+          color: Colors.black54,
+        ),
         bodyLarge: TextStyle(fontSize: 16.0, height: 1.5),
         bodyMedium: TextStyle(fontSize: 16.0, height: 1.5),
       ),
@@ -53,11 +79,12 @@ class ThemesController {
       buttonTheme: ButtonThemeData(
         buttonColor: Colors.grey.shade200,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(5))),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
         textTheme: ButtonTextTheme.accent,
       ),
-    )
+    ),
   };
 
   static ThemeData? _currentTheme;
@@ -73,7 +100,7 @@ class ThemesController {
   }
 
   /// Sets theme and notifies listeners about change.
-  setTheme(Themes theme) async {
+  Future<void> setTheme(Themes theme) async {
     _currentTheme = appThemeData[theme];
 
     // Here we notify listeners that theme changed

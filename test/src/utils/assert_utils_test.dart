@@ -16,18 +16,12 @@ class TestModel extends Model {
 
   @override
   TestModel fromMap(Map<String, dynamic> map) {
-    return TestModel(
-      id: map['id'] as int?,
-      name: map['name'] as String?,
-    );
+    return TestModel(id: map['id'] as int?, name: map['name'] as String?);
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-    };
+    return {'id': id, 'name': name};
   }
 
   @override
@@ -73,87 +67,146 @@ void main() {
 
   test('getValueOrDefault() tests', () {
     // Test for MaterialColor
-    expect(AwesomeAssertUtils.getValueOrDefault<Color>('key', Colors.red),
-        Colors.red.shade500);
+    expect(
+      AwesomeAssertUtils.getValueOrDefault<Color>('key', Colors.red),
+      Colors.red.shade500,
+    );
 
     // Test for MaterialAccentColor
     expect(
-        AwesomeAssertUtils.getValueOrDefault<Color>('key', Colors.pinkAccent),
-        Color(Colors.pinkAccent.value));
+      AwesomeAssertUtils.getValueOrDefault<Color>('key', Colors.pinkAccent),
+      Color(Colors.pinkAccent.toARGB32()),
+    );
 
     // Test for CupertinoDynamicColor
     expect(
-        AwesomeAssertUtils.getValueOrDefault<Color>(
-            'key', CupertinoColors.systemBlue),
-        Color(CupertinoColors.systemBlue.value));
+      AwesomeAssertUtils.getValueOrDefault<Color>(
+        'key',
+        CupertinoColors.systemBlue,
+      ),
+      Color(CupertinoColors.systemBlue.toARGB32()),
+    );
 
     // Test for invalid value
     expect(AwesomeAssertUtils.getValueOrDefault<Color>('key', 123), null);
   });
 
   test('extractValueTest', () async {
-    expect("title",
-        AwesomeAssertUtils.extractValue<String>("test", {"test": "title"}));
-    expect(" title",
-        AwesomeAssertUtils.extractValue<String>("test", {"test": " title"}));
+    expect(
+      "title",
+      AwesomeAssertUtils.extractValue<String>("test", {"test": "title"}),
+    );
+    expect(
+      " title",
+      AwesomeAssertUtils.extractValue<String>("test", {"test": " title"}),
+    );
     expect("", AwesomeAssertUtils.extractValue<String>("test", {"test": ""}));
     expect(" ", AwesomeAssertUtils.extractValue<String>("test", {"test": " "}));
 
-
-    expect(null,
-        AwesomeAssertUtils.extractValue<List<String>>("test", {"test": []}));
-    expect([""],
-        AwesomeAssertUtils.extractValue<List<String>>("test", {"test": [""]}));
-    expect(["1"],
-        AwesomeAssertUtils.extractValue<List<String>>("test", {"test": ["1"]}));
-    expect(["1","2"],
-        AwesomeAssertUtils.extractValue<List<String>>("test", {"test": ["1","2"]}));
-    expect(["1","2","3"],
-        AwesomeAssertUtils.extractValue<List<String>>("test", {"test": ["1","2","3"]}));
-    expect(["1","1","1"],
-        AwesomeAssertUtils.extractValue<List<String>>("test", {"test": ["1","1","1"]}));
+    expect(
+      null,
+      AwesomeAssertUtils.extractValue<List<String>>("test", {"test": []}),
+    );
+    expect(
+      [""],
+      AwesomeAssertUtils.extractValue<List<String>>("test", {
+        "test": [""],
+      }),
+    );
+    expect(
+      ["1"],
+      AwesomeAssertUtils.extractValue<List<String>>("test", {
+        "test": ["1"],
+      }),
+    );
+    expect(
+      ["1", "2"],
+      AwesomeAssertUtils.extractValue<List<String>>("test", {
+        "test": ["1", "2"],
+      }),
+    );
+    expect(
+      ["1", "2", "3"],
+      AwesomeAssertUtils.extractValue<List<String>>("test", {
+        "test": ["1", "2", "3"],
+      }),
+    );
+    expect(
+      ["1", "1", "1"],
+      AwesomeAssertUtils.extractValue<List<String>>("test", {
+        "test": ["1", "1", "1"],
+      }),
+    );
 
     expect(
-        AwesomeAssertUtils.extractValue<Uint8List>(
-            "test", {"test": Uint8List.fromList([])}),
-        Uint8List.fromList([]));
+      AwesomeAssertUtils.extractValue<Uint8List>("test", {
+        "test": Uint8List.fromList([]),
+      }),
+      Uint8List.fromList([]),
+    );
 
     expect(10, AwesomeAssertUtils.extractValue<int>("test", {"test": "10"}));
     expect(10, AwesomeAssertUtils.extractValue<int>("test", {"test": 10}));
     expect(10, AwesomeAssertUtils.extractValue<int>("test", {"test": "10.0"}));
-    expect(10.0,
-        AwesomeAssertUtils.extractValue<double>("test", {"test": "10.0"}));
+    expect(
+      10.0,
+      AwesomeAssertUtils.extractValue<double>("test", {"test": "10.0"}),
+    );
     expect(0, AwesomeAssertUtils.extractValue<int>("test", {"test": "0"}));
     expect(0.0, AwesomeAssertUtils.extractValue<double>("test", {"test": "0"}));
     expect(0, AwesomeAssertUtils.extractValue<int>("test", {"test": "0.0"}));
     expect(0, AwesomeAssertUtils.extractValue<int>("test", {"test": 0}));
 
-    expect(0xFFFF0000,
-        AwesomeAssertUtils.extractValue<int>("test", {"test": "#FF0000"}));
-    expect(0xFFFF0000,
-        AwesomeAssertUtils.extractValue<int>("test", {"test": "#ff0000"}));
-    expect(0xFFFF0000,
-        AwesomeAssertUtils.extractValue<int>("test", {"test": "#FFFF0000"}));
-    expect(0x00FF0000,
-        AwesomeAssertUtils.extractValue<int>("test", {"test": "#00FF0000"}));
-    expect(0xFFFF0000,
-        AwesomeAssertUtils.extractValue<int>("test", {"test": "0xFF0000"}));
-    expect(0xFFFF0000,
-        AwesomeAssertUtils.extractValue<int>("test", {"test": "0xFFff0000"}));
-
-    expect(Colors.black,
-        AwesomeAssertUtils.extractValue<Color>("test", {"test": "#000000"}));
-    expect(Colors.black,
-        AwesomeAssertUtils.extractValue<Color>("test", {"test": "#FF000000"}));
-    expect(Colors.transparent,
-        AwesomeAssertUtils.extractValue<Color>("test", {"test": "#00000000"}));
+    expect(
+      0xFFFF0000,
+      AwesomeAssertUtils.extractValue<int>("test", {"test": "#FF0000"}),
+    );
+    expect(
+      0xFFFF0000,
+      AwesomeAssertUtils.extractValue<int>("test", {"test": "#ff0000"}),
+    );
+    expect(
+      0xFFFF0000,
+      AwesomeAssertUtils.extractValue<int>("test", {"test": "#FFFF0000"}),
+    );
+    expect(
+      0x00FF0000,
+      AwesomeAssertUtils.extractValue<int>("test", {"test": "#00FF0000"}),
+    );
+    expect(
+      0xFFFF0000,
+      AwesomeAssertUtils.extractValue<int>("test", {"test": "0xFF0000"}),
+    );
+    expect(
+      0xFFFF0000,
+      AwesomeAssertUtils.extractValue<int>("test", {"test": "0xFFff0000"}),
+    );
 
     expect(
-        null, AwesomeAssertUtils.extractValue<Color>("test", {"test": null}));
-    expect(null,
-        AwesomeAssertUtils.extractValue<Color>("test", {"test": "#0004"}));
+      Colors.black,
+      AwesomeAssertUtils.extractValue<Color>("test", {"test": "#000000"}),
+    );
     expect(
-        null, AwesomeAssertUtils.extractValue<Color>("test", {"test": "#04"}));
+      Colors.black,
+      AwesomeAssertUtils.extractValue<Color>("test", {"test": "#FF000000"}),
+    );
+    expect(
+      Colors.transparent,
+      AwesomeAssertUtils.extractValue<Color>("test", {"test": "#00000000"}),
+    );
+
+    expect(
+      null,
+      AwesomeAssertUtils.extractValue<Color>("test", {"test": null}),
+    );
+    expect(
+      null,
+      AwesomeAssertUtils.extractValue<Color>("test", {"test": "#0004"}),
+    );
+    expect(
+      null,
+      AwesomeAssertUtils.extractValue<Color>("test", {"test": "#04"}),
+    );
     expect(null, AwesomeAssertUtils.extractValue<Color>("test", {"test": " "}));
 
     expect(null, AwesomeAssertUtils.extractValue<int>("test", {"test": null}));
@@ -162,40 +215,56 @@ void main() {
 
     expect(null, AwesomeAssertUtils.extractValue<String>("test", {"test": 0}));
     expect(
-        null, AwesomeAssertUtils.extractValue<String>("test", {"test": null}));
+      null,
+      AwesomeAssertUtils.extractValue<String>("test", {"test": null}),
+    );
 
     expect(true, AwesomeAssertUtils.extractValue<bool>("test", {"test": true}));
     expect(
-        true, AwesomeAssertUtils.extractValue<bool>("test", {"test": "true"}));
-    expect(false,
-        AwesomeAssertUtils.extractValue<bool>("test", {"test": "false"}));
+      true,
+      AwesomeAssertUtils.extractValue<bool>("test", {"test": "true"}),
+    );
+    expect(
+      false,
+      AwesomeAssertUtils.extractValue<bool>("test", {"test": "false"}),
+    );
   });
 
   test('extractEnumTest', () async {
     expect(
-        NotificationPrivacy.Private,
-        AwesomeAssertUtils.extractEnum<NotificationPrivacy>(
-            "test", {"test": "Private"}, NotificationPrivacy.values));
+      NotificationPrivacy.Private,
+      AwesomeAssertUtils.extractEnum<NotificationPrivacy>("test", {
+        "test": "Private",
+      }, NotificationPrivacy.values),
+    );
 
     expect(
-        NotificationPrivacy.Public,
-        AwesomeAssertUtils.extractEnum<NotificationPrivacy>(
-            "test", {"test": "Public"}, NotificationPrivacy.values));
+      NotificationPrivacy.Public,
+      AwesomeAssertUtils.extractEnum<NotificationPrivacy>("test", {
+        "test": "Public",
+      }, NotificationPrivacy.values),
+    );
 
     expect(
-        null,
-        AwesomeAssertUtils.extractEnum<NotificationPrivacy>(
-            "test", {"test": ""}, NotificationPrivacy.values));
+      null,
+      AwesomeAssertUtils.extractEnum<NotificationPrivacy>("test", {
+        "test": "",
+      }, NotificationPrivacy.values),
+    );
 
     expect(
-        null,
-        AwesomeAssertUtils.extractEnum<NotificationPrivacy>(
-            "test", {"test": " "}, NotificationPrivacy.values));
+      null,
+      AwesomeAssertUtils.extractEnum<NotificationPrivacy>("test", {
+        "test": " ",
+      }, NotificationPrivacy.values),
+    );
 
     expect(
-        null,
-        AwesomeAssertUtils.extractEnum<NotificationPrivacy>(
-            "test", {"test": null}, NotificationPrivacy.values));
+      null,
+      AwesomeAssertUtils.extractEnum<NotificationPrivacy>("test", {
+        "test": null,
+      }, NotificationPrivacy.values),
+    );
   });
 
   group('AwesomeAssertUtils tests', () {
@@ -216,18 +285,15 @@ void main() {
     test('toListMap returns the correct list of maps', () {
       final input = [
         TestModel(id: 1, name: 'test1'),
-        TestModel(id: 2, name: 'test2')
+        TestModel(id: 2, name: 'test2'),
       ];
 
       final result = AwesomeAssertUtils.toListMap<TestModel>(input);
 
-      expect(
-        result,
-        [
-          {'id': 1, 'name': 'test1'},
-          {'id': 2, 'name': 'test2'}
-        ],
-      );
+      expect(result, [
+        {'id': 1, 'name': 'test1'},
+        {'id': 2, 'name': 'test2'},
+      ]);
     });
 
     // Add more tests for the remaining methods
@@ -284,67 +350,88 @@ void main() {
   group('extractValue', () {
     test('returns the correct value when T is DateTime', () {
       final dataMap = {'reference': '2021-09-01T10:00:00'};
-      final result =
-          AwesomeAssertUtils.extractValue<DateTime>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<DateTime>(
+        'reference',
+        dataMap,
+      );
       expect(result, DateTime.parse('2021-09-01T10:00:00'));
     });
 
     test(
-        'returns the correct value when T is DateTime and value is string with timezone',
-        () {
-      final dataMap = {'reference': '2021-09-01 10:00:00 UTC'};
-      final result =
-          AwesomeAssertUtils.extractValue<DateTime>('reference', dataMap);
-      expect(result, DateTime.parse('2021-09-01T10:00:00Z'));
-    });
+      'returns the correct value when T is DateTime and value is string with timezone',
+      () {
+        final dataMap = {'reference': '2021-09-01 10:00:00 UTC'};
+        final result = AwesomeAssertUtils.extractValue<DateTime>(
+          'reference',
+          dataMap,
+        );
+        expect(result, DateTime.parse('2021-09-01T10:00:00Z'));
+      },
+    );
 
-    test('returns the default value when T is DateTime and input is invalid',
-        () {
-      final dataMap = {'reference': 'invalid date'};
-      final result =
-          AwesomeAssertUtils.extractValue<DateTime>('reference', dataMap);
-      expect(result, null);
-    });
+    test(
+      'returns the default value when T is DateTime and input is invalid',
+      () {
+        final dataMap = {'reference': 'invalid date'};
+        final result = AwesomeAssertUtils.extractValue<DateTime>(
+          'reference',
+          dataMap,
+        );
+        expect(result, null);
+      },
+    );
 
     test('returns the correct value when T is a string with double', () {
       final dataMap = {'reference': '10.5'};
-      final result =
-          AwesomeAssertUtils.extractValue<double>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<double>(
+        'reference',
+        dataMap,
+      );
       expect(result, 10.5);
     });
 
     test('returns the correct value when T is double', () {
       final dataMap = {'reference': 10.5};
-      final result =
-          AwesomeAssertUtils.extractValue<double>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<double>(
+        'reference',
+        dataMap,
+      );
       expect(result, 10.5);
     });
 
     test('returns the default value when T is double and input is invalid', () {
       final dataMap = {'reference': 'invalid double'};
-      final result =
-          AwesomeAssertUtils.extractValue<double>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<double>(
+        'reference',
+        dataMap,
+      );
       expect(result, null);
     });
 
     test('returns the correct value when T is bool', () {
       final dataMap = {'reference': 'true'};
-      final result =
-          AwesomeAssertUtils.extractValue<bool>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<bool>(
+        'reference',
+        dataMap,
+      );
       expect(result, true);
     });
 
     test('returns the correct value when T is bool and input is 1', () {
       final dataMap = {'reference': '1'};
-      final result =
-          AwesomeAssertUtils.extractValue<bool>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<bool>(
+        'reference',
+        dataMap,
+      );
       expect(result, true);
     });
 
     test('returns the default value when T is bool and input is invalid', () {
       final dataMap = {'reference': 'invalid bool'};
-      final result =
-          AwesomeAssertUtils.extractValue<bool>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<bool>(
+        'reference',
+        dataMap,
+      );
       expect(result, null);
     });
 
@@ -362,41 +449,55 @@ void main() {
 
     test('returns the correct value when T is double and value is int', () {
       final dataMap = {'reference': 10};
-      final result =
-          AwesomeAssertUtils.extractValue<double>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<double>(
+        'reference',
+        dataMap,
+      );
       expect(result, 10.0);
     });
 
-    test('returns the correct value when T is Color and value is MaterialColor',
-        () {
-      final dataMap = {'reference': Colors.blue};
-      final result =
-          AwesomeAssertUtils.extractValue<Color>('reference', dataMap);
-      expect(result, Colors.blue.shade500);
-    });
+    test(
+      'returns the correct value when T is Color and value is MaterialColor',
+      () {
+        final dataMap = {'reference': Colors.blue};
+        final result = AwesomeAssertUtils.extractValue<Color>(
+          'reference',
+          dataMap,
+        );
+        expect(result, Colors.blue.shade500);
+      },
+    );
 
     test(
-        'returns the correct value when T is Color and value is MaterialAccentColor',
-        () {
-      final dataMap = {'reference': Colors.pinkAccent};
-      final result =
-          AwesomeAssertUtils.extractValue<Color>('reference', dataMap);
-      expect(result, Color(Colors.pinkAccent.value));
-    });
+      'returns the correct value when T is Color and value is MaterialAccentColor',
+      () {
+        final dataMap = {'reference': Colors.pinkAccent};
+        final result = AwesomeAssertUtils.extractValue<Color>(
+          'reference',
+          dataMap,
+        );
+        expect(result, Color(Colors.pinkAccent.toARGB32()));
+      },
+    );
 
     test(
-        'returns the correct value when T is Color and value is CupertinoDynamicColor',
-        () {
-      final dataMap = {'reference': CupertinoColors.systemBlue};
-      final result =
-          AwesomeAssertUtils.extractValue<Color>('reference', dataMap);
-      expect(result, Color(CupertinoColors.systemBlue.value));
-    });
+      'returns the correct value when T is Color and value is CupertinoDynamicColor',
+      () {
+        final dataMap = {'reference': CupertinoColors.systemBlue};
+        final result = AwesomeAssertUtils.extractValue<Color>(
+          'reference',
+          dataMap,
+        );
+        expect(result, Color(CupertinoColors.systemBlue.toARGB32()));
+      },
+    );
 
     test('returns the default value when T is Color and value is invalid', () {
       final dataMap = {'reference': 'invalid color'};
-      final result =
-          AwesomeAssertUtils.extractValue<Color>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<Color>(
+        'reference',
+        dataMap,
+      );
       expect(result, null);
     });
 
@@ -406,56 +507,78 @@ void main() {
       expect(result, 0xFF123456);
     });
 
-    test('returns the correct value when T is Color and value is hex string',
-        () {
-      final dataMap = {'reference': '#FF123456'};
-      final result =
-          AwesomeAssertUtils.extractValue<Color>('reference', dataMap);
-      expect(result, const Color(0xFF123456));
-    });
-
-    test('returns the correct value when T is Color and value is an integer',
-        () {
-      final dataMap = {'reference': 0xFF123456};
-      final result =
-          AwesomeAssertUtils.extractValue<Color>('reference', dataMap);
-      expect(result, const Color(0xFF123456));
-    });
+    test(
+      'returns the correct value when T is Color and value is hex string',
+      () {
+        final dataMap = {'reference': '#FF123456'};
+        final result = AwesomeAssertUtils.extractValue<Color>(
+          'reference',
+          dataMap,
+        );
+        expect(result, const Color(0xFF123456));
+      },
+    );
 
     test(
-        'returns the default value when T is int and value is invalid hex string',
-        () {
-      final dataMap = {'reference': 'invalid hex'};
-      final result = AwesomeAssertUtils.extractValue<int>('reference', dataMap);
-      expect(result, null);
-    });
+      'returns the correct value when T is Color and value is an integer',
+      () {
+        final dataMap = {'reference': 0xFF123456};
+        final result = AwesomeAssertUtils.extractValue<Color>(
+          'reference',
+          dataMap,
+        );
+        expect(result, const Color(0xFF123456));
+      },
+    );
 
     test(
-        'returns the correct value when T is int and value is a decimal string',
-        () {
-      final dataMap = {'reference': '10.5'};
-      final result = AwesomeAssertUtils.extractValue<int>('reference', dataMap);
-      expect(result, 10);
-    });
+      'returns the default value when T is int and value is invalid hex string',
+      () {
+        final dataMap = {'reference': 'invalid hex'};
+        final result = AwesomeAssertUtils.extractValue<int>(
+          'reference',
+          dataMap,
+        );
+        expect(result, null);
+      },
+    );
+
+    test(
+      'returns the correct value when T is int and value is a decimal string',
+      () {
+        final dataMap = {'reference': '10.5'};
+        final result = AwesomeAssertUtils.extractValue<int>(
+          'reference',
+          dataMap,
+        );
+        expect(result, 10);
+      },
+    );
 
     test('returns the correct value when T is bool and value is null', () {
       final dataMap = {'reference': null};
-      final result =
-          AwesomeAssertUtils.extractValue<bool>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<bool>(
+        'reference',
+        dataMap,
+      );
       expect(result, null);
     });
 
     test('returns the correct value when T is bool and value is int', () {
       final dataMap = {'reference': 1};
-      final result =
-          AwesomeAssertUtils.extractValue<bool>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<bool>(
+        'reference',
+        dataMap,
+      );
       expect(result, true);
     });
 
     test('returns the correct value when T is bool and value is false', () {
       final dataMap = {'reference': false};
-      final result =
-          AwesomeAssertUtils.extractValue<bool>('reference', dataMap);
+      final result = AwesomeAssertUtils.extractValue<bool>(
+        'reference',
+        dataMap,
+      );
       expect(result, false);
     });
   });

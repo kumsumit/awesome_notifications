@@ -27,13 +27,19 @@ void main() {
       expect(actionButton.icon, actionButtonMap['icon']);
       expect(actionButton.enabled, actionButtonMap['enabled']);
       expect(
-          actionButton.requireInputText, actionButtonMap['requireInputText']);
+        actionButton.requireInputText,
+        actionButtonMap['requireInputText'],
+      );
       expect(actionButton.autoDismissible, actionButtonMap['autoDismissible']);
       expect(
-          actionButton.showInCompactView, actionButtonMap['showInCompactView']);
+        actionButton.showInCompactView,
+        actionButtonMap['showInCompactView'],
+      );
       expect(
-          actionButton.isDangerousOption, actionButtonMap['isDangerousOption']);
-      expect(actionButton.color!.value, actionButtonMap['color']);
+        actionButton.isDangerousOption,
+        actionButtonMap['isDangerousOption'],
+      );
+      expect(actionButton.color!.toARGB32(), actionButtonMap['color']);
       expect(actionButton.actionType!.name, actionButtonMap['actionType']);
     });
 
@@ -47,12 +53,14 @@ void main() {
         'autoDismissible': true,
         'showInCompactView': false,
         'isDangerousOption': true,
-        'color': Colors.red.value,
+        'color': Colors.red.toARGB32(),
         'actionType': ActionType.Default.name,
       };
 
-      NotificationActionButton? actionButton =
-          NotificationActionButton(key: '', label: '').fromMap(actionButtonMap);
+      NotificationActionButton? actionButton = NotificationActionButton(
+        key: '',
+        label: '',
+      ).fromMap(actionButtonMap);
 
       expect(actionButton, isNotNull);
       expect(actionButton?.key, 'test_key');
@@ -71,35 +79,51 @@ void main() {
   group('Validate tests', () {
     test('should throw exception if key is null or empty', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: '', label: 'test_label', actionType: ActionType.Default);
-      expect(() => actionButton.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+        key: '',
+        label: 'test_label',
+        actionType: ActionType.Default,
+      );
+      expect(
+        () => actionButton.validate(),
+        throwsA(isA<AwesomeNotificationsException>()),
+      );
     });
 
     test('should throw exception if label is null or empty', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: 'test_key', label: '', actionType: ActionType.Default);
-      expect(() => actionButton.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
+        key: 'test_key',
+        label: '',
+        actionType: ActionType.Default,
+      );
+      expect(
+        () => actionButton.validate(),
+        throwsA(isA<AwesomeNotificationsException>()),
+      );
     });
 
-    test('should throw exception if icon is not a native resource media type',
-        () {
-      NotificationActionButton actionButton = NotificationActionButton(
+    test(
+      'should throw exception if icon is not a native resource media type',
+      () {
+        NotificationActionButton actionButton = NotificationActionButton(
           key: 'test_key',
           label: 'test_label',
           icon: 'http://example.com/icon.png',
-          actionType: ActionType.Default);
-      expect(() => actionButton.validate(),
-          throwsA(isA<AwesomeNotificationsException>()));
-    });
+          actionType: ActionType.Default,
+        );
+        expect(
+          () => actionButton.validate(),
+          throwsA(isA<AwesomeNotificationsException>()),
+        );
+      },
+    );
 
     test('should not throw exception for valid action button', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: 'test_key',
-          label: 'test_label',
-          icon: 'resource://test_icon',
-          actionType: ActionType.Default);
+        key: 'test_key',
+        label: 'test_label',
+        icon: 'resource://test_icon',
+        actionType: ActionType.Default,
+      );
       expect(() => actionButton.validate(), returnsNormally);
     });
   });
@@ -107,7 +131,10 @@ void main() {
   group('NotificationActionButton processRetroCompatibility', () {
     test('should process autoCancel', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: 'test_key', label: 'test_label', actionType: ActionType.Default);
+        key: 'test_key',
+        label: 'test_label',
+        actionType: ActionType.Default,
+      );
       Map<String, dynamic> dataMap = actionButton.toMap();
       dataMap['autoCancel'] = true;
 
@@ -118,7 +145,10 @@ void main() {
 
     test('should process buttonType', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: 'test_key', label: 'test_label', actionType: ActionType.Default);
+        key: 'test_key',
+        label: 'test_label',
+        actionType: ActionType.Default,
+      );
       Map<String, dynamic> dataMap = actionButton.toMap();
       dataMap['buttonType'] = ActionType.InputField.name;
 
@@ -131,9 +161,10 @@ void main() {
   group('NotificationActionButton adaptInputFieldToRequireText', () {
     test('should adapt InputField to requireInputText', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: 'test_key',
-          label: 'test_label',
-          actionType: ActionType.InputField);
+        key: 'test_key',
+        label: 'test_label',
+        actionType: ActionType.InputField,
+      );
 
       actionButton.adaptInputFieldToRequireText();
 
@@ -143,7 +174,10 @@ void main() {
 
     test('should not change anything for other actionTypes', () {
       NotificationActionButton actionButton = NotificationActionButton(
-          key: 'test_key', label: 'test_label', actionType: ActionType.Default);
+        key: 'test_key',
+        label: 'test_label',
+        actionType: ActionType.Default,
+      );
 
       actionButton.adaptInputFieldToRequireText();
 

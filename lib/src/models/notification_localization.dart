@@ -61,21 +61,29 @@ class NotificationLocalization extends Model {
   NotificationLocalization? fromMap(Map<String, dynamic> mapData) {
     if (mapData.isEmpty) return null;
 
-    title =
-        AwesomeAssertUtils.extractValue<String>(NOTIFICATION_TITLE, mapData);
+    title = AwesomeAssertUtils.extractValue<String>(
+      NOTIFICATION_TITLE,
+      mapData,
+    );
     body = AwesomeAssertUtils.extractValue<String>(NOTIFICATION_BODY, mapData);
-    summary =
-        AwesomeAssertUtils.extractValue<String>(NOTIFICATION_SUMMARY, mapData);
+    summary = AwesomeAssertUtils.extractValue<String>(
+      NOTIFICATION_SUMMARY,
+      mapData,
+    );
     largeIcon = AwesomeAssertUtils.extractValue<String>(
-        NOTIFICATION_LARGE_ICON, mapData);
+      NOTIFICATION_LARGE_ICON,
+      mapData,
+    );
     bigPicture = AwesomeAssertUtils.extractValue<String>(
-        NOTIFICATION_BIG_PICTURE, mapData);
+      NOTIFICATION_BIG_PICTURE,
+      mapData,
+    );
 
     buttonLabels = mapData[NOTIFICATION_BUTTON_LABELS] is Map
         ? {
             for (MapEntry entry
                 in (mapData[NOTIFICATION_BUTTON_LABELS] as Map).entries)
-              entry.key.toString(): entry.value.toString()
+              entry.key.toString(): entry.value.toString(),
           }
         : null;
     return this;
@@ -88,15 +96,14 @@ class NotificationLocalization extends Model {
   /// returns the created map.
   @override
   Map<String, dynamic> toMap() => {
-        if (title?.isNotEmpty ?? false) NOTIFICATION_TITLE: title,
-        if (body?.isNotEmpty ?? false) NOTIFICATION_BODY: body,
-        if (summary?.isNotEmpty ?? false) NOTIFICATION_SUMMARY: summary,
-        if (bigPicture?.isNotEmpty ?? false)
-          NOTIFICATION_BIG_PICTURE: bigPicture,
-        if (largeIcon?.isNotEmpty ?? false) NOTIFICATION_LARGE_ICON: largeIcon,
-        if (buttonLabels?.isNotEmpty ?? false)
-          NOTIFICATION_BUTTON_LABELS: buttonLabels,
-      };
+    if (title?.isNotEmpty ?? false) NOTIFICATION_TITLE: title,
+    if (body?.isNotEmpty ?? false) NOTIFICATION_BODY: body,
+    if (summary?.isNotEmpty ?? false) NOTIFICATION_SUMMARY: summary,
+    if (bigPicture?.isNotEmpty ?? false) NOTIFICATION_BIG_PICTURE: bigPicture,
+    if (largeIcon?.isNotEmpty ?? false) NOTIFICATION_LARGE_ICON: largeIcon,
+    if (buttonLabels?.isNotEmpty ?? false)
+      NOTIFICATION_BUTTON_LABELS: buttonLabels,
+  };
 
   /// Validates the notification localization settings.
   @override

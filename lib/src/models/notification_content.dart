@@ -77,88 +77,98 @@ class NotificationContent extends BaseNotificationContent {
   }
 
   /// Constructs a [NotificationContent] object with various customization options.
-  NotificationContent(
-      {required int super.id,
-      required String super.channelKey,
-      super.title,
-      super.body,
-      super.titleLocKey,
-      super.bodyLocKey,
-      super.titleLocArgs,
-      super.bodyLocArgs,
-      super.groupKey,
-      super.summary,
-      super.icon,
-      super.largeIcon,
-      super.bigPicture,
-      super.customSound,
-      super.showWhen,
-      super.wakeUpScreen,
-      super.fullScreenIntent,
-      super.criticalAlert,
-      super.roundedLargeIcon,
-      super.roundedBigPicture,
-      super.autoDismissible,
-      super.color,
-      super.timeoutAfter,
-      super.chronometer,
-      super.backgroundColor,
-      super.actionType,
-      NotificationLayout notificationLayout = NotificationLayout.Default,
-      super.payload,
-      super.category,
-      bool hideLargeIconOnExpand = false,
-      bool locked = false,
-      double? progress,
-      int? badge,
-      String? ticker,
-      bool displayOnForeground = true,
-      bool displayOnBackground = true,
-      Duration? duration,
-      NotificationPlayState? playState,
-      double? playbackSpeed})
-      : _hideLargeIconOnExpand = hideLargeIconOnExpand,
-        _progress = progress,
-        _ticker = ticker,
-        _badge = badge,
-        _notificationLayout = notificationLayout,
-        _displayOnForeground = displayOnForeground,
-        _displayOnBackground = displayOnBackground,
-        _locked = locked,
-        _duration = duration,
-        _playState = playState,
-        _playbackSpeed = playbackSpeed;
+  NotificationContent({
+    required int super.id,
+    required String super.channelKey,
+    super.title,
+    super.body,
+    super.titleLocKey,
+    super.bodyLocKey,
+    super.titleLocArgs,
+    super.bodyLocArgs,
+    super.groupKey,
+    super.summary,
+    super.icon,
+    super.largeIcon,
+    super.bigPicture,
+    super.customSound,
+    super.showWhen,
+    super.wakeUpScreen,
+    super.fullScreenIntent,
+    super.criticalAlert,
+    super.roundedLargeIcon,
+    super.roundedBigPicture,
+    super.autoDismissible,
+    super.color,
+    super.timeoutAfter,
+    super.chronometer,
+    super.backgroundColor,
+    super.actionType,
+    NotificationLayout this._notificationLayout = NotificationLayout.Default,
+    super.payload,
+    super.category,
+    bool this._hideLargeIconOnExpand = false,
+    bool this._locked = false,
+    this._progress,
+    this._badge,
+    this._ticker,
+    bool this._displayOnForeground = true,
+    bool this._displayOnBackground = true,
+    this._duration,
+    this._playState,
+    this._playbackSpeed,
+  });
 
   /// Creates a [NotificationContent] instance from a map of data.
   @override
   NotificationContent? fromMap(Map<String, dynamic> mapData) {
     super.fromMap(mapData);
     _hideLargeIconOnExpand = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_HIDE_LARGE_ICON_ON_EXPAND, mapData);
+      NOTIFICATION_HIDE_LARGE_ICON_ON_EXPAND,
+      mapData,
+    );
 
-    _progress =
-        AwesomeAssertUtils.extractValue<double>(NOTIFICATION_PROGRESS, mapData);
+    _progress = AwesomeAssertUtils.extractValue<double>(
+      NOTIFICATION_PROGRESS,
+      mapData,
+    );
     _badge = AwesomeAssertUtils.extractValue<int>(NOTIFICATION_BADGE, mapData);
-    _ticker =
-        AwesomeAssertUtils.extractValue<String>(NOTIFICATION_TICKER, mapData);
-    _locked =
-        AwesomeAssertUtils.extractValue<bool>(NOTIFICATION_LOCKED, mapData);
+    _ticker = AwesomeAssertUtils.extractValue<String>(
+      NOTIFICATION_TICKER,
+      mapData,
+    );
+    _locked = AwesomeAssertUtils.extractValue<bool>(
+      NOTIFICATION_LOCKED,
+      mapData,
+    );
     _duration = AwesomeAssertUtils.extractValue<Duration>(
-        NOTIFICATION_DURATION, mapData);
-    _playState =
-        NotificationPlayState.fromMap(mapData[NOTIFICATION_PLAY_STATE]);
+      NOTIFICATION_DURATION,
+      mapData,
+    );
+    _playState = NotificationPlayState.fromMap(
+      mapData[NOTIFICATION_PLAY_STATE],
+    );
 
     _playbackSpeed = AwesomeAssertUtils.extractValue<double>(
-        NOTIFICATION_PLAYBACK_SPEED, mapData);
+      NOTIFICATION_PLAYBACK_SPEED,
+      mapData,
+    );
 
     _notificationLayout = AwesomeAssertUtils.extractEnum<NotificationLayout>(
-        NOTIFICATION_LAYOUT, mapData, NotificationLayout.values);
+      NOTIFICATION_LAYOUT,
+      mapData,
+      NotificationLayout.values,
+    );
 
     _displayOnForeground = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_DISPLAY_ON_FOREGROUND, mapData);
+      NOTIFICATION_DISPLAY_ON_FOREGROUND,
+      mapData,
+    );
 
     _displayOnBackground = AwesomeAssertUtils.extractValue<bool>(
-        NOTIFICATION_DISPLAY_ON_BACKGROUND, mapData);
+      NOTIFICATION_DISPLAY_ON_BACKGROUND,
+      mapData,
+    );
 
     try {
       validate();

@@ -61,15 +61,29 @@ export 'src/utils/string_utils.dart';
 typedef ActionHandler = Future<void> Function(ReceivedAction receivedAction);
 
 /// Method structure to listen to an notification event with dart
-typedef NotificationHandler = Future<void> Function(
-    ReceivedNotification receivedNotification);
+typedef NotificationHandler =
+    Future<void> Function(ReceivedNotification receivedNotification);
 
 // Pause and Play vibration sequences
 Int64List lowVibrationPattern = Int64List.fromList([0, 200, 200, 200]);
-Int64List mediumVibrationPattern =
-    Int64List.fromList([0, 500, 200, 200, 200, 200]);
-Int64List highVibrationPattern =
-    Int64List.fromList([0, 1000, 200, 200, 200, 200, 200, 200]);
+Int64List mediumVibrationPattern = Int64List.fromList([
+  0,
+  500,
+  200,
+  200,
+  200,
+  200,
+]);
+Int64List highVibrationPattern = Int64List.fromList([
+  0,
+  1000,
+  200,
+  200,
+  200,
+  200,
+  200,
+  200,
+]);
 
 class AwesomeNotifications implements IAwesomeNotifications {
   static int get maxID => 2147483647;
@@ -99,8 +113,9 @@ class AwesomeNotifications implements IAwesomeNotifications {
 
   @override
   Future<void> cancelNotificationsByGroupKey(String groupKey) {
-    return AwesomeNotificationsPlatform.instance
-        .cancelNotificationsByGroupKey(groupKey);
+    return AwesomeNotificationsPlatform.instance.cancelNotificationsByGroupKey(
+      groupKey,
+    );
   }
 
   @override
@@ -110,28 +125,33 @@ class AwesomeNotifications implements IAwesomeNotifications {
 
   @override
   Future<void> cancelSchedulesByChannelKey(String channelKey) {
-    return AwesomeNotificationsPlatform.instance
-        .cancelSchedulesByChannelKey(channelKey);
+    return AwesomeNotificationsPlatform.instance.cancelSchedulesByChannelKey(
+      channelKey,
+    );
   }
 
   @override
   Future<void> cancelSchedulesByGroupKey(String groupKey) {
-    return AwesomeNotificationsPlatform.instance
-        .cancelSchedulesByGroupKey(groupKey);
+    return AwesomeNotificationsPlatform.instance.cancelSchedulesByGroupKey(
+      groupKey,
+    );
   }
 
   @override
-  Future<List<NotificationPermission>> checkPermissionList(
-      {String? channelKey,
-      List<NotificationPermission> permissions = const [
-        NotificationPermission.Badge,
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]}) {
-    return AwesomeNotificationsPlatform.instance
-        .checkPermissionList(channelKey: channelKey, permissions: permissions);
+  Future<List<NotificationPermission>> checkPermissionList({
+    String? channelKey,
+    List<NotificationPermission> permissions = const [
+      NotificationPermission.Badge,
+      NotificationPermission.Alert,
+      NotificationPermission.Sound,
+      NotificationPermission.Vibration,
+      NotificationPermission.Light,
+    ],
+  }) {
+    return AwesomeNotificationsPlatform.instance.checkPermissionList(
+      channelKey: channelKey,
+      permissions: permissions,
+    );
   }
 
   @override
@@ -142,16 +162,18 @@ class AwesomeNotifications implements IAwesomeNotifications {
     Map<String, NotificationLocalization>? localizations,
   }) {
     return AwesomeNotificationsPlatform.instance.createNotification(
-        content: content,
-        schedule: schedule,
-        actionButtons: actionButtons,
-        localizations: localizations);
+      content: content,
+      schedule: schedule,
+      actionButtons: actionButtons,
+      localizations: localizations,
+    );
   }
 
   @override
   Future<bool> createNotificationFromJsonData(Map<String, dynamic> mapData) {
-    return AwesomeNotificationsPlatform.instance
-        .createNotificationFromJsonData(mapData);
+    return AwesomeNotificationsPlatform.instance.createNotificationFromJsonData(
+      mapData,
+    );
   }
 
   @override
@@ -177,8 +199,9 @@ class AwesomeNotifications implements IAwesomeNotifications {
 
   @override
   Future<void> dismissNotificationsByGroupKey(String groupKey) {
-    return AwesomeNotificationsPlatform.instance
-        .dismissNotificationsByGroupKey(groupKey);
+    return AwesomeNotificationsPlatform.instance.dismissNotificationsByGroupKey(
+      groupKey,
+    );
   }
 
   @override
@@ -197,8 +220,9 @@ class AwesomeNotifications implements IAwesomeNotifications {
   }
 
   @override
-  Future<ReceivedAction?> getInitialNotificationAction(
-      {bool removeFromActionEvents = false}) {
+  Future<ReceivedAction?> getInitialNotificationAction({
+    bool removeFromActionEvents = false,
+  }) {
     return AwesomeNotificationsPlatform.instance.getInitialNotificationAction(
       removeFromActionEvents: removeFromActionEvents,
     );
@@ -215,10 +239,14 @@ class AwesomeNotifications implements IAwesomeNotifications {
   }
 
   @override
-  Future<DateTime?> getNextDate(NotificationSchedule schedule,
-      {DateTime? fixedDate}) {
-    return AwesomeNotificationsPlatform.instance
-        .getNextDate(schedule, fixedDate: fixedDate);
+  Future<DateTime?> getNextDate(
+    NotificationSchedule schedule, {
+    DateTime? fixedDate,
+  }) {
+    return AwesomeNotificationsPlatform.instance.getNextDate(
+      schedule,
+      fixedDate: fixedDate,
+    );
   }
 
   @override
@@ -240,8 +268,12 @@ class AwesomeNotifications implements IAwesomeNotifications {
     String? languageCode,
   }) {
     return AwesomeNotificationsPlatform.instance.initialize(
-        defaultIcon, channels,
-        channelGroups: channelGroups, languageCode: languageCode, debug: debug);
+      defaultIcon,
+      channels,
+      channelGroups: channelGroups,
+      languageCode: languageCode,
+      debug: debug,
+    );
   }
 
   @override
@@ -260,20 +292,21 @@ class AwesomeNotifications implements IAwesomeNotifications {
   }
 
   @override
-  Future<bool> requestPermissionToSendNotifications(
-      {String? channelKey,
-      List<NotificationPermission> permissions = const [
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Badge,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]}) {
+  Future<bool> requestPermissionToSendNotifications({
+    String? channelKey,
+    List<NotificationPermission> permissions = const [
+      NotificationPermission.Alert,
+      NotificationPermission.Sound,
+      NotificationPermission.Badge,
+      NotificationPermission.Vibration,
+      NotificationPermission.Light,
+    ],
+  }) {
     return AwesomeNotificationsPlatform.instance
         .requestPermissionToSendNotifications(
-      channelKey: channelKey,
-      permissions: permissions,
-    );
+          channelKey: channelKey,
+          permissions: permissions,
+        );
   }
 
   @override
@@ -282,10 +315,14 @@ class AwesomeNotifications implements IAwesomeNotifications {
   }
 
   @override
-  Future<void> setChannel(NotificationChannel notificationChannel,
-      {bool forceUpdate = false}) {
-    return AwesomeNotificationsPlatform.instance
-        .setChannel(notificationChannel, forceUpdate: forceUpdate);
+  Future<void> setChannel(
+    NotificationChannel notificationChannel, {
+    bool forceUpdate = false,
+  }) {
+    return AwesomeNotificationsPlatform.instance.setChannel(
+      notificationChannel,
+      forceUpdate: forceUpdate,
+    );
   }
 
   @override
@@ -294,11 +331,12 @@ class AwesomeNotifications implements IAwesomeNotifications {
   }
 
   @override
-  Future<bool> setListeners(
-      {required ActionHandler onActionReceivedMethod,
-      NotificationHandler? onNotificationCreatedMethod,
-      NotificationHandler? onNotificationDisplayedMethod,
-      ActionHandler? onDismissActionReceivedMethod}) {
+  Future<bool> setListeners({
+    required ActionHandler onActionReceivedMethod,
+    NotificationHandler? onNotificationCreatedMethod,
+    NotificationHandler? onNotificationDisplayedMethod,
+    ActionHandler? onDismissActionReceivedMethod,
+  }) {
     return AwesomeNotificationsPlatform.instance.setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
       onNotificationCreatedMethod: onNotificationCreatedMethod,
@@ -308,15 +346,16 @@ class AwesomeNotifications implements IAwesomeNotifications {
   }
 
   @override
-  Future<List<NotificationPermission>> shouldShowRationaleToRequest(
-      {String? channelKey,
-      List<NotificationPermission> permissions = const [
-        NotificationPermission.Badge,
-        NotificationPermission.Alert,
-        NotificationPermission.Sound,
-        NotificationPermission.Vibration,
-        NotificationPermission.Light
-      ]}) {
+  Future<List<NotificationPermission>> shouldShowRationaleToRequest({
+    String? channelKey,
+    List<NotificationPermission> permissions = const [
+      NotificationPermission.Badge,
+      NotificationPermission.Alert,
+      NotificationPermission.Sound,
+      NotificationPermission.Vibration,
+      NotificationPermission.Light,
+    ],
+  }) {
     return AwesomeNotificationsPlatform.instance.shouldShowRationaleToRequest(
       channelKey: channelKey,
       permissions: permissions,
@@ -335,8 +374,9 @@ class AwesomeNotifications implements IAwesomeNotifications {
 
   @override
   Future<void> showNotificationConfigPage({String? channelKey}) {
-    return AwesomeNotificationsPlatform.instance
-        .showNotificationConfigPage(channelKey: channelKey);
+    return AwesomeNotificationsPlatform.instance.showNotificationConfigPage(
+      channelKey: channelKey,
+    );
   }
 
   @override
@@ -346,8 +386,9 @@ class AwesomeNotifications implements IAwesomeNotifications {
 
   @override
   Future<bool> setLocalization({required String? languageCode}) async {
-    return AwesomeNotificationsPlatform.instance
-        .setLocalization(languageCode: languageCode);
+    return AwesomeNotificationsPlatform.instance.setLocalization(
+      languageCode: languageCode,
+    );
   }
 
   @override
