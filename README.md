@@ -1524,6 +1524,29 @@ void _updateCurrentProgressBar({
 
 Note that in this example, the showProgressNotification function creates a loop to simulate progress by delaying a fixed amount of time between each simulated step. The _updateCurrentProgressBar function is called at a frequency of one call per second and updates the progress value of the notification. The locked parameter is set to true to prevent the user from dismissing the notification while the progress bar is active.
 
+On Android 16 and above, eligible ongoing progress notifications can request Live Update promotion. Add `NotificationPermission.PromotedNotifications` to your permission checks, keep the notification ongoing with `locked: true`, and set `requestPromotedOngoing: true`. `shortCriticalText` is used by Android for the compact status chip.
+
+```Dart
+await AwesomeNotifications().requestPermissionToSendNotifications(
+  permissions: [NotificationPermission.PromotedNotifications],
+);
+
+await AwesomeNotifications().createNotification(
+  content: NotificationContent(
+    id: id,
+    channelKey: 'progress_bar',
+    title: 'Ride arriving',
+    body: 'Driver is 4 minutes away',
+    category: NotificationCategory.Progress,
+    notificationLayout: NotificationLayout.ProgressBar,
+    progress: 65,
+    locked: true,
+    requestPromotedOngoing: true,
+    shortCriticalText: '4 min',
+  ),
+);
+```
+
 <br>
 <br>
 
@@ -2007,4 +2030,3 @@ If the icon of the notification is not set or not valid, the notification will a
 
 ### Foreground Services behaviour on platforms other than Android
 On any platform other than Android, all foreground service methods are no-ops (they do nothing when called), so you don't need to do a platform check before calling them.
-

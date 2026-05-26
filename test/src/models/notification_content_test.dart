@@ -27,6 +27,8 @@ void main() {
         );
         expect(notificationContent.displayOnForeground, true);
         expect(notificationContent.displayOnBackground, true);
+        expect(notificationContent.requestPromotedOngoing, false);
+        expect(notificationContent.shortCriticalText, isNull);
       });
     });
 
@@ -40,6 +42,8 @@ void main() {
           'badge': 2,
           'ticker': 'ticker_text',
           'locked': true,
+          'requestPromotedOngoing': true,
+          'shortCriticalText': '42%',
           'notificationLayout': 'BigText',
           'displayOnForeground': false,
           'displayOnBackground': false,
@@ -58,6 +62,8 @@ void main() {
         expect(notificationContent.badge, 2);
         expect(notificationContent.ticker, 'ticker_text');
         expect(notificationContent.locked, true);
+        expect(notificationContent.requestPromotedOngoing, true);
+        expect(notificationContent.shortCriticalText, '42%');
         expect(
           notificationContent.notificationLayout,
           NotificationLayout.BigText,
@@ -130,6 +136,8 @@ void main() {
           badge: 2,
           ticker: 'ticker_text',
           locked: true,
+          requestPromotedOngoing: true,
+          shortCriticalText: '42%',
           notificationLayout: NotificationLayout.BigText,
           displayOnForeground: false,
           displayOnBackground: false,
@@ -145,6 +153,8 @@ void main() {
         expect(mapData['badge'], 2);
         expect(mapData['ticker'], 'ticker_text');
         expect(mapData['locked'], true);
+        expect(mapData['requestPromotedOngoing'], true);
+        expect(mapData['shortCriticalText'], '42%');
         expect(mapData['notificationLayout'], 'BigText');
         expect(mapData['displayOnForeground'], false);
         expect(mapData['displayOnBackground'], false);
@@ -160,6 +170,8 @@ void main() {
           badge: 2,
           ticker: 'ticker_text',
           locked: true,
+          requestPromotedOngoing: true,
+          shortCriticalText: '42%',
           notificationLayout: NotificationLayout.BigText,
           displayOnForeground: false,
           displayOnBackground: false,
@@ -178,6 +190,11 @@ void main() {
         expect(stringRepresentation.contains('badge: 2'), true);
         expect(stringRepresentation.contains('ticker: ticker_text'), true);
         expect(stringRepresentation.contains('locked: true'), true);
+        expect(
+          stringRepresentation.contains('requestPromotedOngoing: true'),
+          true,
+        );
+        expect(stringRepresentation.contains('shortCriticalText: 42%'), true);
         expect(
           stringRepresentation.contains('notificationLayout: BigText'),
           true,

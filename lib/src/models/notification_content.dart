@@ -20,6 +20,8 @@ class NotificationContent extends BaseNotificationContent {
   bool? _displayOnBackground;
 
   bool? _locked;
+  bool? _requestPromotedOngoing;
+  String? _shortCriticalText;
 
   /// Returns whether to hide the large icon when the notification is expanded.
   bool? get hideLargeIconOnExpand {
@@ -59,6 +61,19 @@ class NotificationContent extends BaseNotificationContent {
   /// Indicates whether the notification is locked.
   bool? get locked {
     return _locked;
+  }
+
+  /// Requests Android to promote this ongoing notification as a Live Update.
+  ///
+  /// Android only promotes eligible ongoing notifications and may still ignore
+  /// the request when the user or OEM has disabled promoted notifications.
+  bool? get requestPromotedOngoing {
+    return _requestPromotedOngoing;
+  }
+
+  /// Short status text used by Android's promoted notification status chip.
+  String? get shortCriticalText {
+    return _shortCriticalText;
   }
 
   /// Returns the play media duration (media player).
@@ -109,6 +124,8 @@ class NotificationContent extends BaseNotificationContent {
     super.category,
     bool this._hideLargeIconOnExpand = false,
     bool this._locked = false,
+    bool this._requestPromotedOngoing = false,
+    this._shortCriticalText,
     this._progress,
     this._badge,
     this._ticker,
@@ -139,6 +156,14 @@ class NotificationContent extends BaseNotificationContent {
     );
     _locked = AwesomeAssertUtils.extractValue<bool>(
       NOTIFICATION_LOCKED,
+      mapData,
+    );
+    _requestPromotedOngoing = AwesomeAssertUtils.extractValue<bool>(
+      NOTIFICATION_REQUEST_PROMOTED_ONGOING,
+      mapData,
+    );
+    _shortCriticalText = AwesomeAssertUtils.extractValue<String>(
+      NOTIFICATION_SHORT_CRITICAL_TEXT,
       mapData,
     );
     _duration = AwesomeAssertUtils.extractValue<Duration>(
@@ -191,6 +216,8 @@ class NotificationContent extends BaseNotificationContent {
         NOTIFICATION_BADGE: _badge,
         NOTIFICATION_TICKER: _ticker,
         NOTIFICATION_LOCKED: _locked,
+        NOTIFICATION_REQUEST_PROMOTED_ONGOING: _requestPromotedOngoing,
+        NOTIFICATION_SHORT_CRITICAL_TEXT: _shortCriticalText,
         NOTIFICATION_LAYOUT: _notificationLayout?.name,
         NOTIFICATION_DISPLAY_ON_FOREGROUND: _displayOnForeground,
         NOTIFICATION_DISPLAY_ON_BACKGROUND: _displayOnBackground,
