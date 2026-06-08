@@ -9,7 +9,8 @@ A complete solution to create Local Notifications and Push Notifications, throug
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Carda.me' => 'contact@carda.me' }
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
+  # Shared with Package.swift so CocoaPods and Swift Package Manager build the same sources.
+  s.source_files     = 'awesome_notifications/Sources/awesome_notifications/**/*'
   s.static_framework = true
   s.dependency 'Flutter'
   s.dependency 'IosAwnCore', '~> 0.11.0'
@@ -17,7 +18,9 @@ A complete solution to create Local Notifications and Push Notifications, throug
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = {
-    'DEFINES_MODULE' => 'NO',
+    # Pure-Swift pod (the Objective-C registrant shim was removed for SPM): the module
+    # must be defined so the generated plugin registrant can `@import awesome_notifications`.
+    'DEFINES_MODULE' => 'YES',
     'ENABLE_BITCODE' => 'NO',
     'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'NO',
     'APPLICATION_EXTENSION_API_ONLY' => 'NO',
