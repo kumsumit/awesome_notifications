@@ -13,7 +13,7 @@ A complete solution to create Local Notifications and Push Notifications, throug
   s.source_files     = 'awesome_notifications/Sources/awesome_notifications/**/*'
   s.static_framework = true
   s.dependency 'Flutter'
-  s.dependency 'IosAwnCore', '~> 0.11.0'
+  s.dependency 'IosAwnCore', '~> 0.12.0'
   s.platform = :ios, '15.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
