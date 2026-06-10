@@ -31,8 +31,10 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
   
+  # Under Swift Package Manager IosAwnCore is resolved through the plugin's Package.swift.
+  # Uncomment only when building this example with SPM disabled (CocoaPods).
   #pod 'IosAwnCore', '~> 0.10.0'
-  pod 'IosAwnCore', :path => '../../../IosAwnCore/'
+  # pod 'IosAwnCore', :path => '../../../IosAwnCore/'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
