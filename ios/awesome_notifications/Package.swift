@@ -13,11 +13,10 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
-        // IosAwnCore is a standalone (non-Flutter) Swift package, so it must be referenced by
-        // its released tag — Flutter symlinks plugins into ephemeral/Packages/.packages, which
-        // breaks relative paths to non-plugin packages. For local validation before a tag is
-        // published, temporarily replace this with an absolute `path:` to the IosAwnCore repo.
-        .package(name: "IosAwnCore", path: "/Users/rafaelsetragni/Development/Repositories/Plugins/IosAwnCore"),
+        // IosAwnCore is a standalone (non-Flutter) Swift package referenced by its released
+        // tag — Flutter symlinks plugins into ephemeral/Packages/.packages, which breaks
+        // relative paths to non-plugin packages, so it must be a URL+tag (not a local path).
+        .package(url: "https://github.com/rafaelsetragni/IosAwnCore.git", from: "0.12.0"),
     ],
     targets: [
         .target(
