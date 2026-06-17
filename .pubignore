@@ -1,2 +1,4 @@
 build/
 example/ios/Runner/GoogleService-Info.plist
+android/.idea/
+**/.idea/
