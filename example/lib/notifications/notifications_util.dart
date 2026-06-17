@@ -1446,8 +1446,8 @@ class NotificationUtils {
                 '$lorenIpsumText<br><br>$lorenIpsumText<br><br>$lorenIpsumText',
             hideLargeIconOnExpand: true,
             largeIcon:
-                'https://img.itdg.com.br/tdg/images/blog/uploads/2019/05/hamburguer.jpg',
-            bigPicture: 'https://img.itdg.com.br/tdg/images/blog/uploads/2019/05/hamburguer.jpg',
+                'https://img.freepik.com/fotos-gratis/hamburguer-saboroso-isolado-no-fundo-branco-fastfood-de-hamburguer-fresco-com-carne-e-queijo_90220-1063.jpg',
+            bigPicture: 'https://img.freepik.com/fotos-gratis/hamburguer-saboroso-isolado-no-fundo-branco-fastfood-de-hamburguer-fresco-com-carne-e-queijo_90220-1063.jpg',
             notificationLayout: NotificationLayout.BigPicture,
             color: Colors.indigoAccent,
             payload: {'uuid': 'uuid-test'}));
