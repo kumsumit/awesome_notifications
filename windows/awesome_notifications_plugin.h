@@ -1,6 +1,11 @@
 #ifndef FLUTTER_PLUGIN_AWESOME_NOTIFICATIONS_PLUGIN_H_
 #define FLUTTER_PLUGIN_AWESOME_NOTIFICATIONS_PLUGIN_H_
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#include <flutter/encodable_value.h>
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <windows.h>
