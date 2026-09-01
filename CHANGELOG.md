@@ -1,3 +1,11 @@
+## [0.12.0] - 2026-06-16
+### Added
+- **Swift Package Manager support (iOS & macOS):** The plugin now ships a `Package.swift` and can be installed through Swift Package Manager, while keeping CocoaPods support during the transition. This prepares the plugin for Flutter's migration away from CocoaPods, ahead of Firebase ending CocoaPods publishing in October 2026.
+### Changed
+- **Pure-Swift iOS plugin:** Removed the Objective-C registrant shim; the plugin is now registered directly from `SwiftAwesomeNotificationsPlugin`, and the podspec defines its own module.
+- **Android core moved to Maven Central:** `me.carda:AndroidAwnCore` is now published on Maven Central instead of JitPack; the JitPack repository was removed and the dependency resolves through `mavenCentral()`.
+- **Requires IosAwnCore and AndroidAwnCore 0.12.0.**
+
 ## [0.11.0] - 2025-02-12
 ### Added
 - **6 new foreground service types:** Added `health`, `remoteMessaging`, `shortService`, `specialUse`, `systemExempted` (API 34) and `mediaProcessing` (API 35) to `ForegroundServiceType`.

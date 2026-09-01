@@ -24,21 +24,19 @@ public class FlutterBitmapUtils : BitmapUtils {
     }
     
     open override func getBitmapFromAsset(_ mediaPath:String) -> UIImage? {
-        
-        let mediaPath:String? = cleanMediaPath(mediaPath)
+        let cleanPath:String? = cleanMediaPath(mediaPath)
+        if(StringUtils.shared.isNullOrEmpty(cleanPath)){ return nil }
 
-        if(StringUtils.shared.isNullOrEmpty(mediaPath)){ return nil }
-                
-        var topPath:String?
+        // In the host app, resolve through the Flutter registrar (preferred).
         if registrar != nil {
-            let key = registrar!.lookupKey(forAsset: mediaPath!)
-            topPath = Bundle.main.path(forResource: key, ofType: nil)
+            let key = registrar!.lookupKey(forAsset: cleanPath!)
+            if let topPath = Bundle.main.path(forResource: key, ofType: nil) {
+                return getBitmapFromFile(fromRealPath: topPath)
+            }
         }
-        
-        if SwiftUtils.isRunningOnExtension() && topPath?.isEmpty ?? true {
-            topPath = SwiftUtils.getFlutterAssetPath(forAsset: mediaPath!)
-        }
-        
-        return topPath == nil ? nil : getBitmapFromFile(fromRealPath: topPath!)
+
+        // Fall back to the base resolver (Flutter assets via the App.framework bundle path),
+        // which is also the only path used inside an app extension.
+        return super.getBitmapFromAsset(mediaPath)
     }
 }
