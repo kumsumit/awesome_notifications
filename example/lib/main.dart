@@ -243,16 +243,49 @@ class NotificationController {
     );
   }
 
-  static Future<void> scheduleNewNotification() async {
+  static Future<void> scheduleNewNotification(BuildContext context) async {
+    final DateTime now = DateTime.now();
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(now.year, now.month, now.day),
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: 'Select notification date',
+    );
+    if (selectedDate == null || !context.mounted) return;
+
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(now.add(const Duration(minutes: 1))),
+      helpText: 'Select notification time',
+    );
+    if (selectedTime == null) return;
+
+    final DateTime scheduledDate = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedTime.hour,
+      selectedTime.minute,
+    );
+
+    if (!scheduledDate.isAfter(DateTime.now())) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a future date and time.')),
+      );
+      return;
+    }
+
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
     if (!isAllowed) isAllowed = await displayNotificationRationale();
     if (!isAllowed) return;
 
-    await myNotifyScheduleInHours(
+    await myNotifyAtDate(
       title: 'test',
       msg: 'test message',
       heroThumbUrl: 'asset://assets/images/balloons-in-sky.jpg',
-      hoursFromNow: 5,
+      scheduledDate: scheduledDate,
       username: 'test user',
       repeatNotif: false,
     );
@@ -267,26 +300,20 @@ class NotificationController {
   }
 }
 
-Future<void> myNotifyScheduleInHours({
-  required int hoursFromNow,
+Future<void> myNotifyAtDate({
+  required DateTime scheduledDate,
   required String heroThumbUrl,
   required String username,
   required String title,
   required String msg,
   bool repeatNotif = false,
 }) async {
-  var nowDate = DateTime.now().add(Duration(hours: hoursFromNow, seconds: 5));
   await AwesomeNotifications().createNotification(
-    schedule: NotificationCalendar(
-      //weekday: nowDate.day,
-      hour: nowDate.hour,
-      minute: 0,
-      second: nowDate.second,
+    schedule: NotificationCalendar.fromDate(
+      date: scheduledDate,
       repeats: repeatNotif,
-      //allowWhileIdle: true,
+      preciseAlarm: true,
     ),
-    // schedule: NotificationCalendar.fromDate(
-    //    date: DateTime.now().add(const Duration(seconds: 10))),
     content: NotificationContent(
       id: -1,
       channelKey: 'alerts',
@@ -425,7 +452,8 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(width: 10),
             FloatingActionButton(
               heroTag: '2',
-              onPressed: () => NotificationController.scheduleNewNotification(),
+              onPressed: () =>
+                  NotificationController.scheduleNewNotification(context),
               tooltip: 'Schedule New notification',
               child: const Icon(Icons.access_time_outlined),
             ),
