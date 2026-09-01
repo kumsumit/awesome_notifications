@@ -3,17 +3,26 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:palette_generator_master/palette_generator_master.dart';
+
+import 'remote_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   // Always initialize Awesome Notifications
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
+  await RemoteNotifications.initialize(
+    onMessageOpened: NotificationController.onRemoteMessageOpened,
+  );
   runApp(const MyApp());
 }
 
@@ -125,6 +134,24 @@ class NotificationController {
     );
   }
 
+  static Future<void> onRemoteMessageOpened(RemoteMessage message) async {
+    final notification = message.notification;
+    final action = ReceivedAction().fromMap(
+      NotificationContent(
+        id: message.messageId.hashCode & 0x7fffffff,
+        channelKey: 'alerts',
+        title: notification?.title ?? message.data['title'] ?? 'New message',
+        body: notification?.body ?? message.data['body'] ?? '',
+        payload: <String, String>{
+          ...message.data.map((key, value) => MapEntry(key, value.toString())),
+          if (message.messageId != null) 'messageId': message.messageId!,
+          'source': 'firebase',
+        },
+      ).toMap(),
+    );
+    await onActionReceivedImplementationMethod(action);
+  }
+
   ///  *********************************************
   ///     REQUESTING NOTIFICATION PERMISSIONS
   ///  *********************************************
@@ -231,7 +258,7 @@ class NotificationController {
           key: 'REPLY',
           label: 'Reply Message',
           requireInputText: true,
-          actionType: ActionType.SilentAction,
+          actionType: ActionType.SilentBackgroundAction,
         ),
         NotificationActionButton(
           key: 'DISMISS',
@@ -281,13 +308,66 @@ class NotificationController {
     if (!isAllowed) isAllowed = await displayNotificationRationale();
     if (!isAllowed) return;
 
-    await myNotifyAtDate(
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      List<NotificationPermission> preciseAlarmPermissions =
+          await AwesomeNotifications().checkPermissionList(
+            permissions: [NotificationPermission.PreciseAlarms],
+          );
+      if (!preciseAlarmPermissions.contains(
+        NotificationPermission.PreciseAlarms,
+      )) {
+        await AwesomeNotifications().requestPermissionToSendNotifications(
+          permissions: [NotificationPermission.PreciseAlarms],
+        );
+        preciseAlarmPermissions = await AwesomeNotifications()
+            .checkPermissionList(
+              permissions: [NotificationPermission.PreciseAlarms],
+            );
+      }
+
+      if (!preciseAlarmPermissions.contains(
+        NotificationPermission.PreciseAlarms,
+      )) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Precise alarm permission is required to notify at the picked time.',
+            ),
+          ),
+        );
+        return;
+      }
+    }
+
+    if (!scheduledDate.isAfter(DateTime.now())) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('The picked time passed while granting permissions.'),
+        ),
+      );
+      return;
+    }
+
+    final bool wasScheduled = await myNotifyAtDate(
       title: 'test',
       msg: 'test message',
       heroThumbUrl: 'asset://assets/images/balloons-in-sky.jpg',
       scheduledDate: scheduledDate,
       username: 'test user',
       repeatNotif: false,
+    );
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          wasScheduled
+              ? 'Notification scheduled successfully.'
+              : 'Unable to schedule the notification.',
+        ),
+      ),
     );
   }
 
@@ -300,7 +380,7 @@ class NotificationController {
   }
 }
 
-Future<void> myNotifyAtDate({
+Future<bool> myNotifyAtDate({
   required DateTime scheduledDate,
   required String heroThumbUrl,
   required String username,
@@ -308,12 +388,21 @@ Future<void> myNotifyAtDate({
   required String msg,
   bool repeatNotif = false,
 }) async {
-  await AwesomeNotifications().createNotification(
-    schedule: NotificationCalendar.fromDate(
-      date: scheduledDate,
-      repeats: repeatNotif,
-      preciseAlarm: true,
-    ),
+  final NotificationSchedule schedule =
+      defaultTargetPlatform == TargetPlatform.macOS
+      ? NotificationInterval(
+          interval: scheduledDate.difference(DateTime.now()),
+          repeats: false,
+          preciseAlarm: false,
+        )
+      : NotificationCalendar.fromDate(
+          date: scheduledDate,
+          repeats: repeatNotif,
+          preciseAlarm: true,
+        );
+
+  return AwesomeNotifications().createNotification(
+    schedule: schedule,
     content: NotificationContent(
       id: -1,
       channelKey: 'alerts',
@@ -324,6 +413,8 @@ Future<void> myNotifyAtDate({
       //actionType : ActionType.DismissAction,
       color: Colors.black,
       backgroundColor: Colors.black,
+      displayOnForeground: true,
+      displayOnBackground: true,
       // customSound: 'resource://raw/notif',
       payload: {'actPag': 'myAct', 'actType': 'food', 'username': username},
     ),

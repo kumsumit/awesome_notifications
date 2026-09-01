@@ -130,6 +130,60 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  firebase_core:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: b13259e973e2c0037b04003a8011b0b499036bfb
+      url: "https://github.com/kumsumit/firebase_core.git"
+    source: git
+    version: "4.10.0"
+  firebase_core_platform_interface:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: df6c156996ee80474d4fc40a236c31f1df79db0b
+      url: "https://github.com/kumsumit/firebase_core_platform_interface.git"
+    source: git
+    version: "7.0.1"
+  firebase_core_web:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: be3b01f71dcb1e020794382a112cad10f991c970
+      url: "https://github.com/kumsumit/firebase_core_web.git"
+    source: git
+    version: "3.8.0"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "64e40426bb9dd1abcc62f3d65e0260e6a8839656"
+      url: "https://github.com/kumsumit/firebase_messaging.git"
+    source: git
+    version: "16.3.0"
+  firebase_messaging_platform_interface:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "18b64ee20a4c523bffe26f25b7bfba355fdb546f"
+      url: "https://github.com/kumsumit/firebase_messaging_platform_interface.git"
+    source: git
+    version: "4.8.0"
+  firebase_messaging_web:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "8d8c9b67e3f32818bc616ef38cec1415ba354179"
+      url: "https://github.com/kumsumit/firebase_messaging_web.git"
+    source: git
+    version: "4.2.0"
   flare_flutter:
     dependency: transitive
     description:
@@ -161,6 +215,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutterfire_internals:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: a524e2131b0e4cb76665e3ec74483b7ef933a4a3
+      url: "https://github.com/kumsumit/flutterfire_internals.git"
+    source: git
+    version: "1.3.72"
   fluttertoast:
     dependency: "direct main"
     description:
