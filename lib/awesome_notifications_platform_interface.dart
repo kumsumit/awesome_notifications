@@ -27,6 +27,9 @@ abstract class AwesomeNotificationsPlatform extends PlatformInterface
       switch (operatingSystem) {
         case "android":
         case "ios":
+        case "linux":
+        case "macos":
+        case "windows":
           _instance = MethodChannelAwesomeNotifications();
           break;
         default:

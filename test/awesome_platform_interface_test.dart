@@ -37,51 +37,27 @@ void main() {
       );
     });
 
-    test('sets instance for other platforms', () {
-      AwesomeNotificationsPlatform.operatingSystem = 'web';
-      AwesomeNotificationsPlatform.resetInstance();
+    test('sets method-channel instance for desktop platforms', () {
+      for (final platform in ['linux', 'macos', 'windows']) {
+        AwesomeNotificationsPlatform.operatingSystem = platform;
+        AwesomeNotificationsPlatform.resetInstance();
+        expect(
+          AwesomeNotificationsPlatform.instance,
+          isA<MethodChannelAwesomeNotifications>(),
+        );
+      }
+    });
 
-      // Test if the instance is set correctly
-      expect(
-        AwesomeNotificationsPlatform.instance,
-        isA<AwesomeNotificationsEmpty>(),
-      );
+    test('sets empty instance for unsupported platforms', () {
+      for (final platform in ['web', 'fuchsia']) {
+        AwesomeNotificationsPlatform.operatingSystem = platform;
+        AwesomeNotificationsPlatform.resetInstance();
 
-      AwesomeNotificationsPlatform.operatingSystem = "linux";
-      AwesomeNotificationsPlatform.resetInstance();
-
-      // Test if the instance is set correctly
-      expect(
-        AwesomeNotificationsPlatform.instance,
-        isA<AwesomeNotificationsEmpty>(),
-      );
-
-      AwesomeNotificationsPlatform.operatingSystem = "macos";
-      AwesomeNotificationsPlatform.resetInstance();
-
-      // Test if the instance is set correctly
-      expect(
-        AwesomeNotificationsPlatform.instance,
-        isA<AwesomeNotificationsEmpty>(),
-      );
-
-      AwesomeNotificationsPlatform.operatingSystem = "windows";
-      AwesomeNotificationsPlatform.resetInstance();
-
-      // Test if the instance is set correctly
-      expect(
-        AwesomeNotificationsPlatform.instance,
-        isA<AwesomeNotificationsEmpty>(),
-      );
-
-      AwesomeNotificationsPlatform.operatingSystem = "fuchsia";
-      AwesomeNotificationsPlatform.resetInstance();
-
-      // Test if the instance is set correctly
-      expect(
-        AwesomeNotificationsPlatform.instance,
-        isA<AwesomeNotificationsEmpty>(),
-      );
+        expect(
+          AwesomeNotificationsPlatform.instance,
+          isA<AwesomeNotificationsEmpty>(),
+        );
+      }
     });
   });
 }
