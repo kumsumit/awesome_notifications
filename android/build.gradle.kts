@@ -67,7 +67,7 @@ dependencies {
         implementation("com.github.kumsumit.AndroidAwnCore:core:0f9e80f2f3ffbe47bb99811c327f7645225ed6ff")
     }
 
-    implementation("com.google.guava:guava:33.6.0-android")
+    implementation("com.google.guava:guava:33.7.1-android")
 
     // Unit tests
     testImplementation("junit:junit:4.13.2")

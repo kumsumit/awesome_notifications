@@ -79,9 +79,23 @@ public final class AwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNo
   private func makeTrigger(_ schedule: [String: Any]?) -> UNNotificationTrigger? {
     guard let schedule = schedule else { return nil }; let repeats = schedule["repeats"] as? Bool ?? false
     if let seconds = (schedule["interval"] as? NSNumber)?.doubleValue { return UNTimeIntervalNotificationTrigger(timeInterval: max(repeats ? 60 : 1, seconds), repeats: repeats) }
-    var c = DateComponents(); c.timeZone = TimeZone(identifier: schedule["timeZone"] as? String ?? TimeZone.current.identifier); c.year = schedule["year"] as? Int; c.month = schedule["month"] as? Int; c.day = schedule["day"] as? Int; c.hour = schedule["hour"] as? Int; c.minute = schedule["minute"] as? Int; c.second = schedule["second"] as? Int
-    if let weekday = schedule["weekday"] as? Int { c.weekday = weekday == 7 ? 1 : weekday + 1 }; return UNCalendarNotificationTrigger(dateMatching: c, repeats: repeats)
+    var c = DateComponents(); c.timeZone = (schedule["timeZone"] as? String).flatMap(TimeZone.init(identifier:)) ?? .current; c.year = number(schedule["year"]); c.month = number(schedule["month"]); c.day = number(schedule["day"]); c.hour = number(schedule["hour"]); c.minute = number(schedule["minute"]); c.second = number(schedule["second"])
+    if let weekday = number(schedule["weekday"]) { c.weekday = weekday == 7 ? 1 : weekday + 1 }
+
+    // For a one-shot absolute date, use a relative trigger. On macOS this is
+    // more reliable than a non-repeating calendar trigger and still respects
+    // the schedule's time zone.
+    if !repeats, c.year != nil, c.month != nil, c.day != nil {
+      var calendar = Calendar(identifier: .gregorian)
+      calendar.timeZone = c.timeZone ?? .current
+      if let date = calendar.date(from: c) {
+        return UNTimeIntervalNotificationTrigger(timeInterval: max(1, date.timeIntervalSinceNow), repeats: false)
+      }
+    }
+    return UNCalendarNotificationTrigger(dateMatching: c, repeats: repeats)
   }
+
+  private func number(_ value: Any?) -> Int? { (value as? NSNumber)?.intValue }
 
   private func configureActions(_ model: [String: Any], _ content: UNMutableNotificationContent, _ id: Int) {
     let buttons = model["actionButtons"] as? [[String: Any]] ?? []; if buttons.isEmpty { return }
@@ -103,4 +117,3 @@ public final class AwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNo
   private func loadSchedules() -> [String: [String: Any]] { guard let data = UserDefaults.standard.data(forKey: schedulesKey), let value = try? JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else { return [:] }; return value }; private func saveSchedules(_ value: [String: [String: Any]]) { if let data = try? JSONSerialization.data(withJSONObject: value) { UserDefaults.standard.set(data, forKey: schedulesKey) } }
   private func drawable(_ path: String?, _ result: FlutterResult) { guard let name = path?.replacingOccurrences(of: "resource://", with: ""), let url = Bundle.main.url(forResource: name, withExtension: nil), let data = try? Data(contentsOf: url) else { result(nil); return }; result(FlutterStandardTypedData(bytes: data)) }
 }
-

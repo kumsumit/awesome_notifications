@@ -5,6 +5,7 @@
 #include <sys/utsname.h>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 #include <map>
 #include <string>
 
@@ -26,6 +27,62 @@ static const gchar* string_value(FlValue* map, const char* key, const gchar* fal
 static gint64 int_value(FlValue* map, const char* key, gint64 fallback = 0) { FlValue* v = lookup(map, key); return v && fl_value_get_type(v) == FL_VALUE_TYPE_INT ? fl_value_get_int(v) : fallback; }
 static bool bool_value(FlValue* map, const char* key, bool fallback = false) { FlValue* v = lookup(map, key); return v && fl_value_get_type(v) == FL_VALUE_TYPE_BOOL ? fl_value_get_bool(v) : fallback; }
 static FlMethodResponse* success(FlValue* value = nullptr) { return FL_METHOD_RESPONSE(fl_method_success_response_new(value)); }
+
+static bool has_int(FlValue* map, const char* key) {
+  FlValue* value = lookup(map, key);
+  return value && fl_value_get_type(value) == FL_VALUE_TYPE_INT;
+}
+
+// Returns the delay until the next matching calendar occurrence. Flutter sends
+// calendar fields (not an epoch timestamp), so treating a missing interval as a
+// one-second interval makes every calendar notification fire immediately.
+static guint schedule_delay_seconds(FlValue* schedule) {
+  if (has_int(schedule, "interval"))
+    return static_cast<guint>(std::max<gint64>(1, int_value(schedule, "interval")));
+
+  const gchar* identifier = string_value(schedule, "timeZone", nullptr);
+  g_autoptr(GTimeZone) zone = identifier ? g_time_zone_new(identifier) : g_time_zone_new_local();
+  if (!zone) zone = g_time_zone_new_local();
+  g_autoptr(GDateTime) now = g_date_time_new_now(zone);
+
+  // A fully specified date is the common NotificationCalendar.fromDate path.
+  if (has_int(schedule, "year") && has_int(schedule, "month") &&
+      has_int(schedule, "day") && has_int(schedule, "hour") &&
+      has_int(schedule, "minute")) {
+    g_autoptr(GDateTime) target = g_date_time_new(
+        zone, int_value(schedule, "year"), int_value(schedule, "month"),
+        int_value(schedule, "day"), int_value(schedule, "hour"),
+        int_value(schedule, "minute"), int_value(schedule, "second", 0));
+    if (target) {
+      gint64 difference = g_date_time_difference(target, now) / G_TIME_SPAN_SECOND;
+      return static_cast<guint>(std::max<gint64>(1, difference));
+    }
+  }
+
+  // Partial calendars repeat by matching the supplied components. Search at
+  // second or minute granularity for up to two years.
+  const gint64 step = has_int(schedule, "second") ? 1 : 60;
+  g_autoptr(GDateTime) candidate = g_date_time_add_seconds(now, step);
+  const gint64 attempts = (2LL * 366 * 24 * 60 * 60) / step;
+  for (gint64 i = 0; i < attempts; ++i) {
+    bool matches =
+        (!has_int(schedule, "year") || g_date_time_get_year(candidate) == int_value(schedule, "year")) &&
+        (!has_int(schedule, "month") || g_date_time_get_month(candidate) == int_value(schedule, "month")) &&
+        (!has_int(schedule, "day") || g_date_time_get_day_of_month(candidate) == int_value(schedule, "day")) &&
+        (!has_int(schedule, "hour") || g_date_time_get_hour(candidate) == int_value(schedule, "hour")) &&
+        (!has_int(schedule, "minute") || g_date_time_get_minute(candidate) == int_value(schedule, "minute")) &&
+        (!has_int(schedule, "second") || g_date_time_get_second(candidate) == int_value(schedule, "second")) &&
+        (!has_int(schedule, "weekday") || g_date_time_get_day_of_week(candidate) == int_value(schedule, "weekday"));
+    if (matches) {
+      gint64 difference = g_date_time_difference(candidate, now) / G_TIME_SPAN_SECOND;
+      return static_cast<guint>(std::max<gint64>(1, difference));
+    }
+    GDateTime* next = g_date_time_add_seconds(candidate, step);
+    g_date_time_unref(candidate);
+    candidate = next;
+  }
+  return 1;
+}
 
 static FlValue* event_content(FlValue* content) {
   FlValue* event = fl_value_new_map();
@@ -69,7 +126,7 @@ static void handle(AwesomeNotificationsPlugin* self, FlMethodCall* call) {
   else if (strcmp(method, "initialize") == 0 || strcmp(method, "setEventHandles") == 0) response = success(fl_value_new_bool(true));
   else if (strcmp(method, "createNewNotification") == 0) {
     FlValue* content = lookup(args, "content"); gint id = static_cast<gint>(int_value(content, "id")); emit(self, "notificationCreated", content); FlValue* schedule = lookup(args, "schedule");
-    if (!schedule) display(self, args); else { gint64 seconds = int_value(schedule, "interval", 0); if (seconds <= 0) seconds = 1; bool repeats = bool_value(schedule, "repeats"); TimerData* data = new TimerData{AWESOME_NOTIFICATIONS_PLUGIN(g_object_ref(self)), fl_value_ref(args), id, repeats}; guint source = g_timeout_add_seconds_full(G_PRIORITY_DEFAULT, static_cast<guint>(seconds), timer_cb, data, timer_free); g_hash_table_insert(self->models, GINT_TO_POINTER(id), fl_value_ref(args)); g_hash_table_insert(self->timers, GINT_TO_POINTER(id), GUINT_TO_POINTER(source)); }
+    if (!schedule) display(self, args); else { guint seconds = schedule_delay_seconds(schedule); bool repeats = bool_value(schedule, "repeats") && has_int(schedule, "interval"); TimerData* data = new TimerData{AWESOME_NOTIFICATIONS_PLUGIN(g_object_ref(self)), fl_value_ref(args), id, repeats}; guint source = g_timeout_add_seconds_full(G_PRIORITY_DEFAULT, seconds, timer_cb, data, timer_free); g_hash_table_insert(self->models, GINT_TO_POINTER(id), fl_value_ref(args)); g_hash_table_insert(self->timers, GINT_TO_POINTER(id), GUINT_TO_POINTER(source)); }
     response = success(fl_value_new_bool(true));
   } else if (strcmp(method, "listAllSchedules") == 0) { FlValue* list = fl_value_new_list(); GHashTableIter iter; gpointer value; g_hash_table_iter_init(&iter, self->models); while (g_hash_table_iter_next(&iter, nullptr, &value)) fl_value_append_take(list, fl_value_ref(static_cast<FlValue*>(value))); response = success(list); }
   else if (strcmp(method, "cancelSchedule") == 0 || strcmp(method, "dismissNotification") == 0 || strcmp(method, "cancelNotification") == 0) { cancel_id(self, static_cast<gint>(fl_value_get_int(args)), strcmp(method, "dismissNotification") != 0, strcmp(method, "cancelSchedule") != 0); response = success(); }
