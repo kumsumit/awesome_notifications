@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -281,13 +282,66 @@ class NotificationController {
     if (!isAllowed) isAllowed = await displayNotificationRationale();
     if (!isAllowed) return;
 
-    await myNotifyAtDate(
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      List<NotificationPermission> preciseAlarmPermissions =
+          await AwesomeNotifications().checkPermissionList(
+            permissions: [NotificationPermission.PreciseAlarms],
+          );
+      if (!preciseAlarmPermissions.contains(
+        NotificationPermission.PreciseAlarms,
+      )) {
+        await AwesomeNotifications().requestPermissionToSendNotifications(
+          permissions: [NotificationPermission.PreciseAlarms],
+        );
+        preciseAlarmPermissions = await AwesomeNotifications()
+            .checkPermissionList(
+              permissions: [NotificationPermission.PreciseAlarms],
+            );
+      }
+
+      if (!preciseAlarmPermissions.contains(
+        NotificationPermission.PreciseAlarms,
+      )) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Precise alarm permission is required to notify at the picked time.',
+            ),
+          ),
+        );
+        return;
+      }
+    }
+
+    if (!scheduledDate.isAfter(DateTime.now())) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('The picked time passed while granting permissions.'),
+        ),
+      );
+      return;
+    }
+
+    final bool wasScheduled = await myNotifyAtDate(
       title: 'test',
       msg: 'test message',
       heroThumbUrl: 'asset://assets/images/balloons-in-sky.jpg',
       scheduledDate: scheduledDate,
       username: 'test user',
       repeatNotif: false,
+    );
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          wasScheduled
+              ? 'Notification scheduled successfully.'
+              : 'Unable to schedule the notification.',
+        ),
+      ),
     );
   }
 
@@ -300,7 +354,7 @@ class NotificationController {
   }
 }
 
-Future<void> myNotifyAtDate({
+Future<bool> myNotifyAtDate({
   required DateTime scheduledDate,
   required String heroThumbUrl,
   required String username,
@@ -308,7 +362,7 @@ Future<void> myNotifyAtDate({
   required String msg,
   bool repeatNotif = false,
 }) async {
-  await AwesomeNotifications().createNotification(
+  return AwesomeNotifications().createNotification(
     schedule: NotificationCalendar.fromDate(
       date: scheduledDate,
       repeats: repeatNotif,
