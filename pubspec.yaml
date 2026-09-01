@@ -17,14 +17,14 @@ dependencies:
 
   plugin_platform_interface:
     git: https://github.com/kumsumit/plugin_platform_interface.git
-  intl: ^0.20.2
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
-  mockito: ^5.6.4
+  mockito: ^5.8.1
   mocktail: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
