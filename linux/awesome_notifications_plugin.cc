@@ -28,6 +28,14 @@ static gint64 int_value(FlValue* map, const char* key, gint64 fallback = 0) { Fl
 static bool bool_value(FlValue* map, const char* key, bool fallback = false) { FlValue* v = lookup(map, key); return v && fl_value_get_type(v) == FL_VALUE_TYPE_BOOL ? fl_value_get_bool(v) : fallback; }
 static FlMethodResponse* success(FlValue* value = nullptr) { return FL_METHOD_RESPONSE(fl_method_success_response_new(value)); }
 
+static GTimeZone* time_zone_new(const gchar* identifier) {
+#if GLIB_CHECK_VERSION(2, 68, 0)
+  return g_time_zone_new_identifier(identifier);
+#else
+  return g_time_zone_new(identifier);
+#endif
+}
+
 static bool has_int(FlValue* map, const char* key) {
   FlValue* value = lookup(map, key);
   return value && fl_value_get_type(value) == FL_VALUE_TYPE_INT;
@@ -41,7 +49,7 @@ static guint schedule_delay_seconds(FlValue* schedule) {
     return static_cast<guint>(std::max<gint64>(1, int_value(schedule, "interval")));
 
   const gchar* identifier = string_value(schedule, "timeZone", nullptr);
-  g_autoptr(GTimeZone) zone = identifier ? g_time_zone_new(identifier) : g_time_zone_new_local();
+  g_autoptr(GTimeZone) zone = identifier ? time_zone_new(identifier) : g_time_zone_new_local();
   if (!zone) zone = g_time_zone_new_local();
   g_autoptr(GDateTime) now = g_date_time_new_now(zone);
 
