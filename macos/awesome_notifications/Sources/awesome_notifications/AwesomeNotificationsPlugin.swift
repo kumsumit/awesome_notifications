@@ -6,6 +6,7 @@ import UserNotifications
 public final class AwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
   private let center = UNUserNotificationCenter.current()
   private var channel: FlutterMethodChannel?
+  private weak var forwardedCenterDelegate: UNUserNotificationCenterDelegate?
   private var initialAction: [String: Any]?
   private var channels: [String: [String: Any]] = [:]
   private var language = Locale.current.languageCode ?? "en"
@@ -66,7 +67,8 @@ public final class AwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNo
 
   private func create(_ arguments: Any?, _ result: @escaping FlutterResult) {
     guard let model = arguments as? [String: Any], let value = model["content"] as? [String: Any], let id = value["id"] as? Int else { result(FlutterError(code: "INVALID_ARGUMENT", message: "content.id is required", details: nil)); return }
-    let content = UNMutableNotificationContent(); content.title = value["title"] as? String ?? ""; content.body = value["body"] as? String ?? ""; content.subtitle = value["summary"] as? String ?? ""; content.userInfo = model
+    installNotificationCenterDelegate()
+    let content = UNMutableNotificationContent(); content.title = value["title"] as? String ?? ""; content.body = value["body"] as? String ?? ""; content.subtitle = value["summary"] as? String ?? ""; content.userInfo = propertyListDictionary(model)
     content.sound = (value["customSound"] as? String).map { UNNotificationSound(named: UNNotificationSoundName($0)) } ?? .default
     configureActions(model, content, id)
     let trigger = makeTrigger(model["schedule"] as? [String: Any]); emit("notificationCreated", event(value))
@@ -97,14 +99,59 @@ public final class AwesomeNotificationsPlugin: NSObject, FlutterPlugin, UNUserNo
 
   private func number(_ value: Any?) -> Int? { (value as? NSNumber)?.intValue }
 
+  // StandardMessageCodec represents Dart null values as NSNull. UserNotifications
+  // only accepts property-list values in userInfo, so remove nulls recursively
+  // before submitting the request to macOS.
+  private func propertyListDictionary(_ dictionary: [String: Any]) -> [String: Any] {
+    dictionary.reduce(into: [:]) { result, entry in
+      if let value = propertyListValue(entry.value) { result[entry.key] = value }
+    }
+  }
+
+  private func propertyListValue(_ value: Any) -> Any? {
+    if value is NSNull { return nil }
+    if let dictionary = value as? [String: Any] { return propertyListDictionary(dictionary) }
+    if let array = value as? [Any] { return array.compactMap(propertyListValue) }
+    if value is String || value is NSNumber || value is Data || value is Date { return value }
+    return nil
+  }
+
+  private func installNotificationCenterDelegate() {
+    guard (center.delegate as AnyObject?) !== self else { return }
+    forwardedCenterDelegate = center.delegate
+    center.delegate = self
+  }
+
   private func configureActions(_ model: [String: Any], _ content: UNMutableNotificationContent, _ id: Int) {
     let buttons = model["actionButtons"] as? [[String: Any]] ?? []; if buttons.isEmpty { return }
     let actions: [UNNotificationAction] = buttons.compactMap { b in guard b["enabled"] as? Bool ?? true else { return nil }; let key = b["key"] as? String ?? UUID().uuidString, title = b["label"] as? String ?? key; var options: UNNotificationActionOptions = []; if b["isDangerousOption"] as? Bool == true { options.insert(.destructive) }; if b["isAuthenticationRequired"] as? Bool == true { options.insert(.authenticationRequired) }; return b["requireInputText"] as? Bool == true ? UNTextInputNotificationAction(identifier: key, title: title, options: options) : UNNotificationAction(identifier: key, title: title, options: options) }
     let name = "awesome_notifications.\(id)"; center.setNotificationCategories([UNNotificationCategory(identifier: name, actions: actions, intentIdentifiers: [], options: [])]); content.categoryIdentifier = name
   }
 
-  public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler done: @escaping (UNNotificationPresentationOptions) -> Void) { let value = (notification.request.content.userInfo["content"] as? [String: Any]) ?? [:]; emit("notificationDisplayed", event(value)); done([.alert, .sound, .badge]) }
-  public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler done: @escaping () -> Void) { var value = (response.notification.request.content.userInfo["content"] as? [String: Any]) ?? [:]; value["buttonKeyPressed"] = response.actionIdentifier == UNNotificationDefaultActionIdentifier ? nil : response.actionIdentifier; value["buttonKeyInput"] = (response as? UNTextInputNotificationResponse)?.userText; value["actionDate"] = dateString(Date()); value["actionLifeCycle"] = NSApplication.shared.isActive ? "FOREGROUND" : "BACKGROUND"; initialAction = value; emit("defaultAction", value); done() }
+  public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler done: @escaping (UNNotificationPresentationOptions) -> Void) {
+    let value = (notification.request.content.userInfo["content"] as? [String: Any]) ?? [:]
+    emit("notificationDisplayed", event(value))
+    guard let forwarded = forwardedCenterDelegate,
+          forwarded.responds(to: #selector(userNotificationCenter(_:willPresent:withCompletionHandler:))) else {
+      done([.alert, .sound, .badge]); return
+    }
+    forwarded.userNotificationCenter?(center, willPresent: notification) { options in
+      done(options.union([.alert, .sound, .badge]))
+    }
+  }
+
+  public func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler done: @escaping () -> Void) {
+    var value = (response.notification.request.content.userInfo["content"] as? [String: Any]) ?? [:]
+    value["buttonKeyPressed"] = response.actionIdentifier == UNNotificationDefaultActionIdentifier ? nil : response.actionIdentifier
+    value["buttonKeyInput"] = (response as? UNTextInputNotificationResponse)?.userText
+    value["actionDate"] = dateString(Date()); value["actionLifeCycle"] = NSApplication.shared.isActive ? "FOREGROUND" : "BACKGROUND"
+    initialAction = value; emit("defaultAction", value)
+    guard let forwarded = forwardedCenterDelegate,
+          forwarded.responds(to: #selector(userNotificationCenter(_:didReceive:withCompletionHandler:))) else {
+      done(); return
+    }
+    forwarded.userNotificationCenter?(center, didReceive: response, withCompletionHandler: done)
+  }
 
   private func activeIds(_ done: @escaping ([Int]) -> Void) { center.getDeliveredNotifications { done($0.compactMap { Int($0.request.identifier) }) } }
   private func remove(_ id: Int?, _ pending: Bool, _ delivered: Bool) { guard let id = id else { return }; let key = String(id); if pending { center.removePendingNotificationRequests(withIdentifiers: [key]); var saved = loadSchedules(); saved.removeValue(forKey: key); saveSchedules(saved) }; if delivered { center.removeDeliveredNotifications(withIdentifiers: [key]) } }
