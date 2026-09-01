@@ -25,9 +25,26 @@ Engage your users with custom local and push notifications on Flutter. Get real-
 * **Real-time events:** Receive real-time events on the Flutter level code for notifications that are created, displayed, dismissed, or tapped by the user.
 * **Highly customizable:** With a range of customizable options, including translations, you can tailor notifications to fit your specific needs.
 * **Scheduled notifications:** Schedule notifications repeatedly or at specific times with second precision to keep your users up-to-date.
+* **Desktop support:** Create and manage notifications on macOS, Windows, and Linux, in addition to Android and iOS.
 * **Trusted performance:** Receive notifications with confidence and trust in any application lifecycle.
 * **Easy to use:** With an easy-to-use interface, you can start creating custom notifications in minutes.
 <br>
+<br>
+
+## Supported Platforms
+
+Awesome Notifications now supports mobile and desktop applications from the same Dart API.
+
+| Platform | Support |
+| --- | --- |
+| Android | Supported |
+| iOS | Supported |
+| macOS | Supported |
+| Windows | Supported |
+| Linux | Supported |
+
+Desktop support includes local notification creation, cancellation, scheduling, badge APIs where the operating system permits them, and notification lifecycle events. Some layouts, permissions, background execution modes, and action behaviors remain platform-specific and are ignored when the operating system has no equivalent capability.
+
 <br>
 
 ***Android** notification examples:*
@@ -105,7 +122,6 @@ Stay up to date with new updates and get community support by subscribing to our
 # ✅ Next steps
 
 - Include `Web support`
-- Include `Desktop support`
 - Include `Live Activities notifications`
 - Include `Time Sensitive notifications`
 - Include `Communication notifications`
@@ -252,6 +268,7 @@ We are constantly working to improve Awesome Notifications and provide support f
 
 - [Awesome Notifications for Flutter - Year 2](#awesome-notifications-for-flutter---year-2)
     - [**Key Features:**](#key-features)
+  - [Supported Platforms](#supported-platforms)
   - [Notification Types Available](#notification-types-available)
 - [🛑 ATTENTION - PLUGIN UNDER DEVELOPMENT](#-attention---plugin-under-development)
 - [🤝 Contributing](#-contributing)
@@ -271,6 +288,10 @@ We are constantly working to improve Awesome Notifications and provide support f
   - [Initial Configurations](#initial-configurations)
     - [🤖 Configuring Android for Awesome Notifications:](#-configuring-android-for-awesome-notifications)
     - [🍎 Configuring iOS for Awesome Notifications:](#-configuring-ios-for-awesome-notifications)
+    - [🌙 Background and Remote Notifications](#-background-and-remote-notifications)
+      - [Background and Terminated Scheduling](#background-and-terminated-scheduling)
+      - [Background Notification Actions](#background-notification-actions)
+      - [Firebase Messaging in Foreground and Background](#firebase-messaging-in-foreground-and-background)
 - [📨 How to show Local Notifications](#-how-to-show-local-notifications)
   - [📝 Getting started - Important notes](#-getting-started---important-notes)
 - [🍎⁺ Extra iOS Setup for Background Actions](#-extra-ios-setup-for-background-actions)
@@ -407,6 +428,111 @@ OneSignal.Notifications.addForegroundWillDisplayListener((event) {
 ```
 
 Both helpers also accept payloads already formatted as Awesome Notifications JSON (`content`, `schedule`, `actionButtons`, and `localizations`), including those values encoded as JSON strings in provider data payloads.
+
+### 🌙 Background and Remote Notifications
+
+Awesome Notifications supports three separate background scenarios: displaying a scheduled local notification while the app is not visible, executing a notification action without opening the app, and rendering a remote push received by another push SDK.
+
+#### Background and Terminated Scheduling
+
+Set both lifecycle display flags when creating the notification. The operating system is responsible for firing supported schedules after they have been registered, so the Flutter UI does not need to remain open.
+
+```dart
+await AwesomeNotifications().createNotification(
+  content: NotificationContent(
+    id: 100,
+    channelKey: 'basic_channel',
+    title: 'Background reminder',
+    body: 'This notification can appear while the app is not visible.',
+    displayOnForeground: true,
+    displayOnBackground: true,
+  ),
+  schedule: NotificationCalendar.fromDate(
+    date: scheduledDate,
+    preciseAlarm: true,
+  ),
+);
+```
+
+Android requires the appropriate alarm and boot permissions for precise schedules and schedule restoration. Apple platforms use system notification scheduling. Windows and Linux desktop schedules currently require the application process to remain running; closing the desktop process removes its in-memory timer.
+
+#### Background Notification Actions
+
+Use `SilentBackgroundAction` when an action must run without bringing the application to the foreground. The callback must be a static or top-level entry point, must not access UI state, and must await all asynchronous work before returning.
+
+```dart
+NotificationActionButton(
+  key: 'SYNC',
+  label: 'Sync now',
+  actionType: ActionType.SilentBackgroundAction,
+);
+
+@pragma('vm:entry-point')
+static Future<void> onActionReceivedMethod(ReceivedAction action) async {
+  if (action.actionType == ActionType.SilentBackgroundAction) {
+    await syncInBackground(action.payload);
+    return;
+  }
+
+  // Route visual actions through the main isolate before navigating.
+  await handleVisualAction(action);
+}
+```
+
+See [Extra iOS Setup for Background Actions](#-extra-ios-setup-for-background-actions) when the callback needs to call other Flutter plugins.
+
+#### Firebase Messaging in Foreground and Background
+
+When using `firebase_messaging`, register its background handler before `runApp`. The handler must be top-level and annotated so release builds do not tree-shake it.
+
+```dart
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  // Notification payloads are displayed by the OS in the background.
+  // Convert only data-only messages here to avoid duplicate alerts.
+  if (message.notification == null) {
+    await AwesomeNotifications().createNotificationFromFirebaseMessage(
+      data: message.data,
+      channelKey: 'basic_channel',
+    );
+  }
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseMessagingBackgroundHandler,
+  );
+
+  await Firebase.initializeApp();
+  await initializeAwesomeNotifications();
+
+  FirebaseMessaging.onMessage.listen((message) async {
+    await AwesomeNotifications().createNotificationFromFirebaseMessage(
+      data: message.data,
+      channelKey: 'basic_channel',
+      title: message.notification?.title,
+      body: message.notification?.body,
+    );
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen(handleRemoteNotificationTap);
+  runApp(const MyApp());
+
+  final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => handleRemoteNotificationTap(initialMessage),
+    );
+  }
+}
+```
+
+Complete the Firebase setup for every target platform: add the generated Firebase configuration, enable Push Notifications and the `remote-notification` background mode on Apple platforms, and configure APNs credentials for Firebase. Web background delivery requires a Firebase Messaging service worker.
+
+Firebase Messaging supports Android, iOS, macOS, and web push delivery. It does not provide production remote-push transport for Windows or Linux; use a platform-specific push provider there and pass its payload to Awesome Notifications for rendering.
 
 Now you need to modify some files in native libraries to use awesome_notifications properly. Let's start with the Android configurations:
 
@@ -850,7 +976,7 @@ With the examples bellow, you can check all the features and how to use the Awes
 
 To run and debug the Simple Example App, follow the steps below:
 
-1. Create a new Flutter project with at least Android or iOS
+1. Create a new Flutter project targeting Android, iOS, macOS, Windows, or Linux
 2. Copy the example code at https://pub.dev/packages/awesome_notifications/example
 3. Paste the content inside the `main.dart` file
 4. Debug the application with a real device or emulator

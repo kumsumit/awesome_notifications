@@ -6,15 +6,23 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:palette_generator_master/palette_generator_master.dart';
+
+import 'remote_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   // Always initialize Awesome Notifications
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
+  await RemoteNotifications.initialize(
+    onMessageOpened: NotificationController.onRemoteMessageOpened,
+  );
   runApp(const MyApp());
 }
 
@@ -126,6 +134,24 @@ class NotificationController {
     );
   }
 
+  static Future<void> onRemoteMessageOpened(RemoteMessage message) async {
+    final notification = message.notification;
+    final action = ReceivedAction().fromMap(
+      NotificationContent(
+        id: message.messageId.hashCode & 0x7fffffff,
+        channelKey: 'alerts',
+        title: notification?.title ?? message.data['title'] ?? 'New message',
+        body: notification?.body ?? message.data['body'] ?? '',
+        payload: <String, String>{
+          ...message.data.map((key, value) => MapEntry(key, value.toString())),
+          if (message.messageId != null) 'messageId': message.messageId!,
+          'source': 'firebase',
+        },
+      ).toMap(),
+    );
+    await onActionReceivedImplementationMethod(action);
+  }
+
   ///  *********************************************
   ///     REQUESTING NOTIFICATION PERMISSIONS
   ///  *********************************************
@@ -232,7 +258,7 @@ class NotificationController {
           key: 'REPLY',
           label: 'Reply Message',
           requireInputText: true,
-          actionType: ActionType.SilentAction,
+          actionType: ActionType.SilentBackgroundAction,
         ),
         NotificationActionButton(
           key: 'DISMISS',
@@ -362,12 +388,21 @@ Future<bool> myNotifyAtDate({
   required String msg,
   bool repeatNotif = false,
 }) async {
+  final NotificationSchedule schedule =
+      defaultTargetPlatform == TargetPlatform.macOS
+      ? NotificationInterval(
+          interval: scheduledDate.difference(DateTime.now()),
+          repeats: false,
+          preciseAlarm: false,
+        )
+      : NotificationCalendar.fromDate(
+          date: scheduledDate,
+          repeats: repeatNotif,
+          preciseAlarm: true,
+        );
+
   return AwesomeNotifications().createNotification(
-    schedule: NotificationCalendar.fromDate(
-      date: scheduledDate,
-      repeats: repeatNotif,
-      preciseAlarm: true,
-    ),
+    schedule: schedule,
     content: NotificationContent(
       id: -1,
       channelKey: 'alerts',
@@ -378,6 +413,8 @@ Future<bool> myNotifyAtDate({
       //actionType : ActionType.DismissAction,
       color: Colors.black,
       backgroundColor: Colors.black,
+      displayOnForeground: true,
+      displayOnBackground: true,
       // customSound: 'resource://raw/notif',
       payload: {'actPag': 'myAct', 'actType': 'food', 'username': username},
     ),
