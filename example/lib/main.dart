@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -24,6 +25,34 @@ Future<void> main() async {
     onMessageOpened: NotificationController.onRemoteMessageOpened,
   );
   runApp(const MyApp());
+  if (Platform.environment['AWESOME_NOTIFICATIONS_SMOKE_TEST'] == '1') {
+    unawaited(runMacOSNotificationSmokeTest());
+  }
+}
+
+Future<void> runMacOSNotificationSmokeTest() async {
+  const id = 8675309;
+  if (!await AwesomeNotifications().isNotificationAllowed()) {
+    await AwesomeNotifications().requestPermissionToSendNotifications();
+  }
+  await AwesomeNotifications().cancel(id);
+  final created = await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: id,
+      channelKey: 'alerts',
+      title: 'macOS scheduling smoke test',
+      body: 'Delivered after five seconds',
+      displayOnForeground: true,
+      displayOnBackground: true,
+    ),
+    schedule: NotificationInterval(
+      interval: const Duration(seconds: 5),
+      repeats: false,
+    ),
+  );
+  debugPrint('SMOKE created=$created pending=${(await AwesomeNotifications().listScheduledNotifications()).map((e) => e.content?.id).toList()}');
+  await Future<void>.delayed(const Duration(seconds: 8));
+  debugPrint('SMOKE delivered=${await AwesomeNotifications().isNotificationActiveOnStatusBar(id: id)} pending=${(await AwesomeNotifications().listScheduledNotifications()).map((e) => e.content?.id).toList()}');
 }
 
 ///  *********************************************
