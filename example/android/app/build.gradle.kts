@@ -9,7 +9,7 @@ android {
     namespace = "me.carda.awesome_notifications_example"
 
     compileSdk = 37 // flutter.compileSdkVersion
-    ndkVersion = "30.0.14904198"
+    ndkVersion = "30.0.16138531"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
