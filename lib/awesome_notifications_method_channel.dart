@@ -158,7 +158,7 @@ class MethodChannelAwesomeNotifications extends AwesomeNotificationsPlatform {
         throw Exception('Notification map data is invalid');
       }
 
-      return createNotification(
+      return await createNotification(
         content: notificationModel.content!,
         schedule: notificationModel.schedule,
         actionButtons: notificationModel.actionButtons,
